@@ -1,0 +1,24 @@
+@charset "utf-8";
+/* CSS Document */
+body{foont-size:1em;}
+.head{width:100%;position:fixed;top:0;display:inline-block;height:3em;line-height:3em;background:#EEF1F3;text-align:center;}
+.head input{border:none;display:inline-block;width:95%;border-radius:0.3em;height:1.8em;text-align:center;color:#747474;}
+
+.list{
+	width:100%;
+	margin-top:3em;
+	}	
+.list ul{width:100%;list-style-type:none;
+
+}
+.list ul,li{padding:0;margin:0;width:100%;}
+/*
+.list ul li a{text-decoration:none;color:#333333;height:3em;line-height:3em;border-bottom:0.5px solid #DADEE3;margin-left:1em;width:100%;display:inline-block;
+background:url("../../image/productAdmin/department_list/keshi_104.png") no-repeat left center,url("../../image/productAdmin/department_list/right.png") no-repeat 98% center;
+background-size:1.6em 3em,0.5em 0.8em;
+}
+
+.list ul li:hover{background:#C0C7C8;}
+*/
+
+

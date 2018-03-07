@@ -1,0 +1,187 @@
+@charset "utf-8";
+/* CSS Document */
+/*做手机微信端需要注意*/
+/*保证在不同手机上字体大小是不变的，我们需要加上禁止缩放的css样式*/
+body{
+	-webkit-text-size-adjust:100%;
+	-ms-text-size-adjust:100%;
+     }
+/*常用的input框在ios上，点击背景会变灰，需要设置高亮0,0,0*/
+input{
+	-webkit-tab-highlight-color:rgba(0,0,0,0);}
+	
+/*手机上会出现各种奇怪的样式，需要将手机的样式去掉*/
+input[type="tel"],input[type="button"],input[type="date"],input[type="text"],input[type="password"]{-webkit-appearance:none;}
+
+
+/*手机端去除样式后，会导致checkbox显示不出来，我们还需要将input[type=checkbox]时的手机选样式表现为checkbox*/
+input[type="checkbox"]{-webkit-appearance:checkbox;}
+
+/*在测试微信页面效果时，安卓手机，一定要微信测试，不可用手机自带浏览器，苹果手机用微信和其他浏览器均可以，在微信测试时，可以利用微信扫一扫，在火狐浏览器点击二维码小图标，生成一个二维码，用微信扫一扫就可以*/
+
+button{cursor:pointer;}
+body{
+	
+	font-size:1em;
+	background:#EEF1F3;
+}
+.div{margin:0;padding:0;display:inline-block;}
+.tab{
+    width:100%;
+	background-color:#FFF;
+	position:fixed;
+	z-index:1;
+}
+
+.tab1,.tab2{
+	width:50%;
+	font-size:1em;
+	text-align:center;
+	display:inline-block;
+	padding:0.5em 0;
+	color:#666;
+	}
+
+.tab_hover{
+	color:#41b2a6;
+	border-bottom:2px #41b2a6 solid;
+	}
+
+
+
+
+.main{
+
+	background:#EEF1F3;
+	position:relative;
+	padding-bottom:5%;
+	padding-top:3.3em;
+	  display:-moz-box;
+    display:-webkit-box;
+    display:box;
+ }
+
+.main .content1{
+	margin:0 1em;
+	-moz-box-flex:1;
+    -webkit-box-flex:1;
+    box-flex:1;
+}
+.main .content1 .part1,.part2{
+	width:100%;
+	background:#FFF;
+	border:1px solid #D1D1D1;
+	margin-bottom:1em;
+	border-radius:0.5em;
+	}
+.main .content1  .span{
+	border-bottom:1px solid #D1D1D1;
+     width:100%;
+	 margin:0 auto;
+	 }	
+.main .content1 .span1,.span2{
+	width:40%;
+	display:inline-block;
+	color:#949494;
+	padding:0.5em 5%;
+	font-size:0.9em;
+	}
+.main .content1   .span2{
+	text-align:right;
+	}
+.main .content1 .small_content{
+	width:100%;
+	padding:1em;
+	line-height:height;
+	}
+.main .content1  .small_content .doc_img{
+	display:inline-block;
+	width:4em;
+	padding:0.3em;
+	border:1px solid #E5E5E5;
+	float:left;
+	border-radius:0.5em;
+	text-align:center;
+	}
+
+.doc_img img{
+	width:100%;
+	}
+	
+	
+.main .content1  .small_content 	.outpatient{
+	
+	display:inline-block;
+	float:left;
+	}
+.main .content1  .small_content 	.outpatient span{
+	display:block;
+	font-size:0.8em;
+	line-height:2em;
+	color:#949494;
+	padding-left:1em;
+	
+	}
+.main .content1  .small_content 	.outpatient .outpatient1{
+	color:#000;
+	}
+.main .content1  .small_content .button{
+	display:inline-block;
+	width:9em;
+	text-align:center;
+	line-height:2em;	
+	float:right;
+	margin-right:1em;
+	
+	}
+.main .content1  .small_content .button .button1,.button2{
+	border: 1px solid #D1D1D1;
+    border-radius: 0.5em;
+    box-shadow: none;
+    color: #949494;
+    font-size: 0.9em;
+    width: 70%;
+	padding:0.5em 0;
+	}
+.main .content1  .small_content .button .button2{
+    border:1px solid #D1D1D1;
+	color:#09F;
+	}
+	
+.clear{clear:both;}
+
+
+.main .content1  .pson,.time{
+	
+	border-top:1px solid #D1D1D1;
+     width:100%;
+	 margin:0 auto;
+	 background:#FAFAFA;
+	 }	
+.main .content1  .pson .pson1,.pson2{
+	width:40%;
+	display:inline-block;
+	color:#949494;
+	padding:0.5em 5%;
+	font-size:0.9em;
+	}
+.main .content1   .pson .pson2{
+	text-align:right;
+	}
+
+
+.time1,.time2{
+	
+	display:inline-block;
+	color:#949494;
+	padding:0.5em 5%;
+	font-size:0.9em;
+	}
+
+/*取号密码*/
+.password{color:red;font-weight:bold;}
+.main .content1  .time .time1{width:20%;}
+.main .content1  .time .time2{
+	width:60%;
+	text-align:right;
+	}

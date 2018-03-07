@@ -1,0 +1,22 @@
+package com.danrong.wx.yzzpat.util;
+
+public class Config {
+
+  public static final String charset = "utf-8";
+
+  public static final String msgType_event = "event";
+  public static final String event_subscribe = "subscribe";
+  public static final String event_unsubscribe = "unsubscribe";
+
+  public static final String msgType_text = "text";
+  public static final String return_subscribe_text = "欢迎关注易转诊患者端公众号！回复1查看使用说明。";
+  public static final String return_default_text = "您可以在‘预定服务’选择康复医院并申请转院，可以在‘个人中心订单’查看我的订单，如有疑问，请拨打400-996-8881";
+
+  public static final String suffix_arg_split = "###";
+  public static final String startChar = "<Response>";
+  public static final String endChar = "</Response>";
+
+  public static final String order_success_template_id = "EHoFfZpNPy8MmiAMUfSYam3ChDhp-mAR9YJZEselEsw";
+  public static final String cancel_order_success_template_id = "HnIiI6JDi4smEDyrD9BZy7eYbDugp9OeenAy5ySgb0Y";
+  public static final String template_url = "http://weixin.qq.com/download";
+}

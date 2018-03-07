@@ -1,0 +1,85 @@
+.clearfix {
+  zoom: 1;
+}
+.clearfix:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+body,
+html {
+  height: 100%;
+  width: 100%;
+}
+body .main,
+html .main {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  auto: 0;
+  background: #EDF1F3;
+  font-size: 0.53333333rem;
+}
+body .main .head,
+html .main .head {
+  margin: 0;
+  height: 1.33333333rem;
+  line-height: 1.33333333rem;
+  width: 100%;
+  background: #009CE2;
+  color: #fff;
+  padding: 0 0.5rem;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  white-space: nowrap;
+}
+body .main .head i,
+html .main .head i {
+  display: inline-block;
+  width: 0.83333333rem;
+  height: 0.83333333rem;
+  float: right;
+  background: red;
+  margin-left: 0.5rem;
+  margin-top: 0.16666667rem;
+}
+body .main .head i.i1,
+html .main .head i.i1 {
+  background: url(assets/image/productAdmin/checkrecord/down.jpg) no-repeat;
+  background-size: cover;
+}
+body .main .head i.i2,
+html .main .head i.i2 {
+  background: url(assets/image/productAdmin/checkrecord/calendar.jpg) no-repeat;
+  background-size: cover;
+}
+body .main .tab,
+html .main .tab {
+  height: 1.33333333rem;
+  display: flex;
+  flex-direction: row;
+  white-space: nowrap;
+  background: #fff;
+}
+body .main .tab span,
+html .main .tab span {
+  display: inline-flex;
+  display: -webkit-flex;
+  justify-content: center;
+  width: 50%;
+  height: 1.33333333rem;
+  line-height: 1.33333333rem;
+}
+body .main .tab span.active,
+html .main .tab span.active {
+  color: #0096C3;
+  border-bottom: 0.06666667rem solid #0096c3;
+}
+body .main .show p,
+html .main .show p {
+  height: 1rem;
+  line-height: 1rem;
+  color: red;
+  padding-left: 0.5rem;
+}

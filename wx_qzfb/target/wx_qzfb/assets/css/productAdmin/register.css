@@ -1,0 +1,212 @@
+@charset "utf-8";
+/* CSS Document */
+/*做手机微信端需要注意*/
+/*保证在不同手机上字体大小是不变的，我们需要加上禁止缩放的css样式*/
+body{
+	-webkit-text-size-adjust:100%;
+	-ms-text-size-adjust:100%;
+     }
+/*常用的input框在ios上，点击背景会变灰，需要设置高亮0,0,0*/
+input{
+	-webkit-tab-highlight-color:rgba(0,0,0,0);}
+	
+/*手机上会出现各种奇怪的样式，需要将手机的样式去掉*/
+input[type="tel"],input[type="button"],input[type="date"],input[type="text"],input[type="password"]{-webkit-appearance:none;}
+
+
+/*手机端去除样式后，会导致checkbox显示不出来，我们还需要将input[type=checkbox]时的手机选样式表现为checkbox*/
+input[type="checkbox"]{-webkit-appearance:checkbox;}
+
+/*在测试微信页面效果时，安卓手机，一定要微信测试，不可用手机自带浏览器，苹果手机用微信和其他浏览器均可以，在微信测试时，可以利用微信扫一扫，在火狐浏览器点击二维码小图标，生成一个二维码，用微信扫一扫就可以*/
+
+button{cursor:pointer;}
+body{
+	
+	font-size:1em;
+	background:#EEF1F3;
+	white-space:normal
+}
+.div{margin:0;padding:0;display:inline-block;}
+.tab{
+    width:100%;
+	background-color:#FFF;
+	position:fixed;
+	z-index:1;
+	display:-moz-box;
+    display:-webkit-box;
+    display:box;
+}
+
+.tab1,.tab2{
+	display:inline-block;
+	font-size:1em;
+	text-align:center;
+	height:2.5em;
+	line-height:2.5em;
+	width:50%;
+	
+	
+	
+	display:-moz-box;
+    display:-webkit-box;
+    display:box;
+	-moz-box-flex:1;
+    -webkit-box-flex:1;
+    box-flex:1;
+	
+	-moz-box-pack:center;
+    -webkit-box-pack:center;
+    box-pack:center;
+	
+	
+	}
+
+.tab_hover{
+	color:#41b2a6;
+	border-bottom:2px #41b2a6 solid;
+	}
+
+
+
+
+.main{
+    width:100%;
+	background:#EEF1F3;
+	
+	padding-top:3.7em;
+	display:-moz-box;
+    display:-webkit-box;
+    display:box;
+ }
+
+.main .content{
+	margin:0 1em;
+	-moz-box-flex:1;
+    -webkit-box-flex:1;
+    box-flex:1;
+}
+/*一部分*/
+.main .content .part{
+	width:100%;
+	background:#FFF;
+	
+	margin-bottom:1em;
+	/*border-radius:0.5em;
+	border-top:1px solid #D1D1D1;
+	*/
+	
+	}
+p{  width:100%;
+	margin:0;
+	padding:0;
+	display:-moz-box;
+    display:-webkit-box;
+    display:box;
+	background:#fcfcfc;
+	color:#444;
+	font-size:0.9em;
+	}
+
+.main .content .part p:first-child{background:#fff;}
+
+p span{
+	display:-moz-box;
+    display:-webkit-box;
+    display:box;
+	-moz-box-flex:1;
+    -webkit-box-flex:1;
+    box-flex:1;
+	
+	height:2em;
+	line-height:2em;
+	/*border-bottom:0.5px solid #D1D1D1;*/
+	
+	background-image: -webkit-linear-gradient(top,#D1D1D1 50%,transparent 50%); 
+	background-image: linear-gradient(top,#fafafa 50%,transparent 50%); 
+	background-size:  100% 1px; 
+	background-repeat: no-repeat; 
+	background-position: top right; 
+	}
+p.firstP span{
+	background-image: -webkit-linear-gradient(top,#fff 50%,transparent 50%); 
+	background-image: linear-gradient(top,#fff 50%,transparent 50%); 
+	background-size:  100% 0; 
+	background-repeat: no-repeat; 
+	background-position: top right;
+}
+p span:first-child{
+	padding-left:1em;
+	}
+p span:last-child{
+	/*居右面显示*/
+	display:-moz-box;
+    display:-webkit-box;
+    display:box;
+    
+	text-align:right;
+	-moz-box-pack:end;
+    -webkit-box-pack:end;
+    box-pack:end;
+    
+	padding-right:1em;
+	}
+.small_content{
+	
+	padding:0.5em 0;
+	/*border-bottom:0.5px solid #d1d1d1;*/
+	background-image: -webkit-linear-gradient(top,#D1D1D1 50%,transparent 50%); 
+	background-image: linear-gradient(top,#fafafa 50%,transparent 50%); 
+	background-size:  100% 1px; 
+	background-repeat: no-repeat; 
+	background-position: top right;
+	
+	display:-moz-box;
+    display:-webkit-box;
+    display:box;
+	}
+/*图片*/
+.small_content img{
+	float:left;
+	margin-left:1em;
+	width:6em;
+	display:inline-block;
+	display:-moz-box;
+    display:-webkit-box;
+    display:box;
+	}
+.small_content div.outpatient{
+	
+	margin-left:0.6em;
+	line-height:2.1em;
+	
+	-moz-box-flex:1;
+    -webkit-box-flex:1;
+    box-flex:1;
+	
+	}
+.small_content div.outpatient span{
+	display:inline-block;
+	width:100%;
+	font-size:0.8em;
+	
+	color:#949494;
+	}
+.small_content div.outpatient span:first-child{
+	color:#000;
+	font-weight:bold;
+	}
+.button{
+	margin-top:1em;
+	display:inline-block;
+	margin-right:1em;
+	border:1px solid #41b2a6;
+	background:#fff;
+	color:#41b2a6;
+	padding:0.3em 0.3em;
+	font-size: 0.9em;
+	border-radius:0.3em;
+	}
+
+
+/*取号密码*/
+.password{color:red;font-weight:bold;}

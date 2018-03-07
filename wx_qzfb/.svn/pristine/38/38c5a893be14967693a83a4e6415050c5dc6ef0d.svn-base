@@ -1,0 +1,510 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=”zh”> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=”zh”> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=”zh”> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang=”zh”> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>预定挂号</title>
+        <meta name="description" content="">
+        <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport">
+        <meta content="yes" name="apple-mobile-web-app-capable">
+        <meta content="black" name="apple-mobile-web-app-status-bar-style">
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="format-detection" content="email=no" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+        <link rel="stylesheet" href="assets/css/productAdmin/normalize.css">      
+        <link rel="stylesheet" href="assets/css/productAdmin/main.css">
+      <!--   <link href="assets/css/productAdmin/order.css" rel="stylesheet"> -->
+	   <script src="assets/script/productAdmin/jquery.min.js"></script>
+        <script src="assets/script/productAdmin/vendor/modernizr-2.6.2.min.js"></script>
+    
+        <!--手机移动端web资源的整合  end-->
+        <style>
+        
+   body{background:#EEF1F3;padding:0;margin:0;}
+.part1{width:100%;margin-top:0.6em;background:#fff;display:inline-block;}
+.part1 .head{padding:0.5em 0;border:0.5px solid #E8E8E8;}
+.part1 .head{
+	height:6.3em;
+	padding-left:5.5em;
+	word-wrap:break-word;
+}
+.part1 img{
+	left:0.5em;
+	width:5em;
+	
+	/*float:left;
+	margin-left:0.5em;*/
+	position:absolute;
+	}
+.clear{clear:both;}
+
+.part1 .intro{
+	margin-left:0.6em;
+	/*float:left;*/
+	
+	}
+
+.part1 .intro .p1 .span1{font-size:1em;font-weight:bold;}
+.part1 .intro .p1 .span2{color:#666666;font-size:0.8em;margin-left:0.2em;}
+
+.part1 .head .p2{color:#999999; font-size:0.95em;font-weight:100;}
+
+
+/*.part1 .pre_intro{width:100%;}*/
+.part1 .pre_intro p{height:2.5em;line-height:2.5em;  margin:0;padding:0;
+ font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif;font-weight:100;font-size:0.95em;padding:0 0.7em;}
+
+.part1 .pre_intro .p2{border-top:0.5px solid #E9E9E9;
+ border-bottom:0.5px solid #E9E9E9;
+}
+
+.part1 .pre_intro p .span2{float:right;}
+.part1 .pre_intro .p1 .span2{font-size:0.9em;color:#737373;}
+/*.part1 .pre_intro .p2 .span2 a{color:#41b2a6;font-size:0.9em;padding:0 0.1em;}*/
+
+.list{
+	width:100%;
+	display:inline-block;
+	background:#fff;
+	margin-top:0.7em;
+	margin-bottom:4em;
+	}
+.list ul.ul1{list-style-type:none;}
+.list ul.ul1,li.li1{padding:0;margin:0;width:100%;}
+/* .list ul li:hover{background:#C0C7C8;} */
+.list ul.ul1 li.li1 p{height:3em;line-height:3em;border-bottom:0.5px solid #E8E8E8;margin:0;padding:0;margin-left:0.7em;
+background:url("assets/image/productAdmin/order/defaut.png") no-repeat left center;
+	background-size:1.3em;
+	font-size:0.9em;color:#646464;}
+.list ul.ul1 li.li1 p .span3{float:right;margin-right:0.7em;
+}
+
+.list ul.ul1 li.li1 p .span2{
+	margin-left:2em;
+	}
+.list ul.ul1 li.li1 p .span3 a{color:#41b2a6;padding:0 0.2em;}
+
+.fixed{
+	width:100%;
+	height:4em;
+	background:#EEF1F3;
+	position:fixed;
+	bottom:0;
+	display:inlie-block;
+	z-index:1;
+	text-align:center;
+	}
+.fixed button{
+	border:none;
+	margin:0.7em 0;
+	height:2.5em;
+	line-height:2.5em;
+	background:#41b2a6;
+	border-radius:0.3em;
+	width:96%;
+	color:#F9F0F2;
+	font-size:1.05em;
+	letter-spacing:0.1em;
+	vertical-align:middle; 
+	}
+   
+   
+/*弹出模态框*/
+
+.bg
+     {
+     display: none;
+	 width: 100%;
+	 height: 100%;
+	 opacity:0.8;/*设置背景色透明度,1为完全不透明,IE需要使用filter:alpha(opacity=80);*/
+	 filter:alpha(opacity=80);
+	position:fixed;
+	 top:0;
+	 left:0;
+	 z-index:2;
+	background: silver;
+    }
+  
+  .bg1
+     {
+     display: none;
+	 width: 100%;
+	 height: 100%;
+	 opacity:0.8;/*设置背景色透明度,1为完全不透明,IE需要使用filter:alpha(opacity=80);*/
+	 filter:alpha(opacity=80);
+	position:fixed;
+	 top:0;
+	 left:0;
+	 z-index:3;
+	background: silver;
+    }
+.modal
+    {
+	display:none;
+	 border:1px solid #41b2a6;
+	 width:100%;
+	 position:fixed;/*让节点脱离文档流,我的理解就是,从页面上浮出来,不再按照文档其它内容布局*/
+	 bottom:0px;
+	  z-index:3;/*个人理解为层级关系,由于这个节点要在顶部显示,所以这个值比其余节点的都大*/
+	 background: white;
+     border-radius:0.5em;
+    }
+.modal ul.ul2{margin:0;padding:0;width:100%;}    
+.modal li.li2{height:2em;border-bottom:1px dashed #ccc;list-style-type:none;margin:0;padding:0;width:100%;}
+.modal li.li2 p{margin-left:0.5em;background:url("assets/image/productAdmin/order/defaut.png") left center no-repeat;background-size:1.3em;}
+.modal li.li2 span.spanYhao{margin-left:1.5em;}
+.modal li.li2 span.spanTime{float:right;margin-right:1em;}
+.modal li.li2 span{color:#777}
+.modal  button.submitButton{border:none;font-size:1.2em;height:3em;width:100%;background:#41b2a6;color:#fff;letter-spacing:1em;font-weight:bold;}
+
+.modal h4{
+        diaplay:inline-block;
+		width:100%;
+		text-align:center;
+		margin-bottom:3em}
+.modal img{
+   width:1.8em;position:absolute;top:0.8em;right:1em;color:#fff;
+}
+        
+        
+        
+        
+.halfPxBorderBottom{
+	background-image: -webkit-linear-gradient(bottom,#dedede 50%,transparent 50%); 
+	background-image: linear-gradient(bottom,#dedede 50%,transparent 50%); 
+	background-size:  100% 1px; 
+	background-repeat: no-repeat; 
+	background-position: bottom right;
+}
+
+
+
+/*挂号须知*/
+.notes{
+	 /*display:none;*/
+	 border:1px solid #C6C6C6;
+	display:none;
+	 width:90%;
+	 position:fixed;/*让节点脱离文档流,我的理解就是,从页面上浮出来,不再按照文档其它内容布局*/
+	 top:24%;/*节点脱离了文档流,如果设置位置需要用top和left,right,bottom定位*/
+	 margin:auto 5%;
+	 z-index:1700;/*个人理解为层级关系,由于这个节点要在顶部显示,所以这个值比其余节点的都大*/
+	 background: white;
+	 border-radius:0.5em;
+	}
+	
+.notes h4 {
+    text-align:center;
+    margin:0;
+    height:3em;
+    line-height:3em;
+    border-bottom:1px solid #DADEE3;
+}
+.notes .close img{
+width:1.8em;position:absolute;top:0.4em;right:1em;color:#fff;
+}
+.notes pre{margin:0 1em;font-size:0.8em;word-break:break-all;}
+
+.notes .button{width:100%;margin:0 auto;}
+.notes .button button{display:inline-block;width:50%;text-align:center;height:2.5em;line-height:2.5em;background:#fff;border:1px solid #DADEE3;font-size:1.1em;}	
+.notes .confirm{color:#41b2a6;}
+.notes .cancel{color:#777;}
+ </style>
+        
+   </head>
+     <body>
+         <div class="part1 halfPxBorderBottom" style="border-bottom:none;">
+             <input type="hidden" name="card_no" value="${default_card.card_no}">
+             <input type="hidden" name="cardType" value="${default_card.c_type}">
+             <input type="hidden" name="scheduleItemCode" value="${schedule.scheduleItemCode}">
+             <input type="hidden" name="name" value="${default_card.patient_name}">
+             <input type="hidden" name="sex" value="${default_card.sex}">
+             <input type="hidden" name="department" value="${schedule.departmentName}">
+             <input type="hidden" name="serviceDate" value="${schedule.serviceDate}">
+             <input type="hidden" name="doctor" value="${schedule.doctorName}">
+             
+             <input type="hidden" name="picktime" value="">
+             <input type="hidden" name="yHao" value="">
+             
+              <input type="hidden" name="gHao" value="1号">
+			<input type="hidden" name="gHaoTime" value="9:00--9:06">
+			<!-- 点击详情页  去挂号 -->
+			<input type="hidden" name="startDate" value="${schedule.serviceDate}">
+			<input type="hidden" name="departmentCode" value="${schedule.departmentCode}">
+			
+             <div class="head halfPxBorderBottom" style="height:97px; overflow:hidden; border-bottom:none;">
+                 <img src="${doctorImage}" style="border-radius:40px;top:27px;"/>
+                 <input type="hidden" name="doctorCode" value="${schedule.doctorCode}">
+                 <div class="intro">
+                     <p class="p1" style="margin:0.6em 0; margin-top:0.4em;"><span class="span1">${schedule.doctorName}</span></p>
+                     <p class="p2" style="margin:0.6em 0;"><span class="span2">${schedule.doctorTitle}</span></p>
+                     <p class="p2" style="margin:0.6em 0;">${schedule.departmentName}</p>
+                 </div>
+                 <div class="clear"></div>
+             </div>
+             
+             <div class="pre_intro" id="patientName">
+                 <p class="p1"><span class="span1" id="department">${schedule.departmentName}</span><span class="span2" id="date">${schedule.serviceDate}</span></p>
+                 <p class="p1"><span class="span1">挂号费</span><span class="span2"><a style="color:#41b2a6;padding-right:0.3em;">${schedule.fee}</a>元</span></p>
+                 <p class="p1" ><span class="span1">就诊人</span><span class="span2" class="patient_name">${default_card.patient_name}</span></p>
+             </div>
+             <div class="clear"></div>
+         </div>
+         
+         <div class="list">
+             <ul class="ul1">
+                  <c:if test="${nolist==true}">
+                      <li style="background:#fff;" class="li1">
+             			<p style="background:#fff;font-size:1em;color:red;">
+                     		  今天的号已挂完。
+                      </p> 
+	                  </li>
+                  </c:if>
+	              <c:forEach items="${data}" var="record">
+	                  <li class="li1">
+		                   <p>
+		                     <input name="time" type="hidden" value="${record.startTime}">
+		                     <input name="yHaoNum" type="hidden" value="${record.count}">
+		                     <input type="hidden" name="next_no" value="${record.no}">
+		                     
+	                        <span class="span2 " name="time" data-val="${record.startTime}">${record.startTime}-${record.endTime}</span>
+	                        <span class="span3" name="yHao" data-val="${record.count}">余号<a class="yHao">${record.count}</a>个</span>
+	                        
+	                      </p>
+	                  </li>
+	                   <!-- 加模态框 -->
+						         <div class="bg"></div>
+						         <div class="modal">
+							         <ul class="ul2">
+							                  <h4>余号详情</h4> <span class="close"><img src="assets/image/productAdmin/order/close1.png"></span>
+							                  <c:forEach items="${record.numMapArray}" var="subRecord">
+							                   <li class="li2">
+									              <p>
+									               <span class="spanYhao">${subRecord.index}号</span><span class="spanTime">${subRecord.start}--${subRecord.end}</span>
+									              </p> 
+									           </li>
+							              </c:forEach>
+							         </ul>
+							         <button type="button"  class="submitButton">提交</button>
+						         </div>
+						         
+					<!-- 加模态框 --> 
+	              </c:forEach>
+	             
+            </ul>
+         <div class="clear"></div>
+         </div>
+         
+         
+          <div class="bg1"></div>
+	         <div class="notes">
+		                  <h4>挂号须知</h4> 
+		                  <pre>
+		                  
+1.本系统挂号自费病人可选择直接支付，医保报销病人请到医院自助机缴费取号。
+2.请携带身份证或医保卡前往对应科室就诊、检查、治疗、取药等。
+3.当天当班不就诊，医院不再安排就诊及退费。		                  
+		                  </pre>
+		                  <div class="button"><button type="button" class="cancel">取消</button><button type="button" class="confirm">确认</button></div>
+	         </div>
+         
+         
+          <script type="text/javascript">
+	        //移动页面滚动后不触发touchend、
+	  		//解决方法是在滚动时就给停止touchend事件冒泡，实现如下：
+	  		stopTouchendPropagationAfterScroll();
+	  		function stopTouchendPropagationAfterScroll(){
+	  		    var locked = false;
+	  		    window.addEventListener('touchmove', function(ev){
+	  		        locked || (locked = true, window.addEventListener('touchend', stopTouchendPropagation, true));
+	  		    }, true);
+	  		    function stopTouchendPropagation(ev){
+	  		        ev.stopPropagation();
+	  		        window.removeEventListener('touchend', stopTouchendPropagation, true);
+	  		        locked = false;
+	  		    }
+	  		}
+	  		//-----------------------------------------------------------------
+	  		//点击余号  判断是否有余号 弹出模态框
+	  		$('.list ul.ul1 li.li1').on('click',function(){
+	  			//大时间段的开始时间
+	  			var picktime=$(this).find('span[name="time"]').attr('data-val');
+		  		$('input[name="picktime"]').val(picktime);
+		  		//获取当前余号的个数
+		  		var yHao=$(this).find('span[name="yHao"]').attr('data-val');
+		  		$('input[name="yHao"]').val(yHao);
+			  		
+	  			if(yHao==0){
+	  			//弹出模态框
+	  				alert('当前没有余号，不能选择挂号');
+	  				return false;
+	  			}else{
+	  				//弹出模态框
+	  				$(this).next('.bg').show(1,function(){
+						$(this).next('.modal').fadeIn(500);
+					});
+	  			};
+	  		});
+	  		//点击号子进行挂号，给要挂的号进行赋值
+	  		$('.modal ul.ul2 li.li2 p').on('click',function(){
+	  			notesShow();
+	  			var spanYhao=$(this).find('.spanYhao').html();
+	  			var spanTime=$(this).find('.spanTime').html();
+	  			
+	  			$('input[name="gHao"]').val(spanYhao);
+	  			$('input[name="gHaoTime"]').val(spanTime);
+	  		});
+	  		
+	  		
+	  		//显示  预约须知 模态框
+	  		function notesShow(){
+	  			$('.notes').show();
+  				$('.bg1').show();
+	  		}
+		  
+	  		//点击确认按钮  把该传的值放在隐藏域里
+	  		$('.modal button').on('click',function(){
+	  			 //获取到要传递的值
+				   var department=$('#department').html();
+				   var date=$('#date').html();
+				   var card_no=$('input[name="card_no"]').val();
+		    		var cardType=$('input[name="cardType"]').val();
+		    		var scheduleItemCode=$('input[name="scheduleItemCode"]').val();
+		    		var serviceDate=$('input[name="serviceDate"]').val();
+		    		var name=$('input[name="name"]').val();
+		    		var sex=$('input[name="sex"]').val();
+		    		var department=$('input[name="department"]').val();
+		    		var doctor=$('input[name="doctor"]').val();
+		    		//一整块时间
+		    		var picktime=$('input[name="picktime"]').val();
+		    		//余号
+				    var yHao=$('input[name="yHao"]').val();
+	  			    //要挂的号子  和时间
+				    var gHao=$('input[name="gHao"]').val();
+		  			var gHaoTime=$('input[name="gHaoTime"]').val();
+		  			/*
+		  			var notes=$('.notes input[name="notes"]').val();
+		  			
+		  			if(notes==2){
+		  				alert("您已取消预约通知");
+		  				return false;
+		  			};
+		  			*/
+	  			
+		  			//判断是否勾选了号子
+		  			var pChecked=$(this).parents('.modal').find('p[data-val="1"]');
+		  			if(pChecked.length<1){
+		  				alert("您没有勾选时间和号子");
+		  				return false;
+		  			}else{
+		  				if(confirm('您当前的挂号码为'+gHao+'\n您当前的科室为'+department+'\n您挂号的时间为'+serviceDate+'\n是否确定继续挂号?')){
+		  					var questURL="orderSubmit.do";
+			    	    	var questArr={
+			    	    			scheduleItemCode:scheduleItemCode,
+			    	    			seqCode:gHao,
+			    	    			cardType:cardType,
+			    	    			cardNo:card_no,
+			    	    			name:name,
+			    	    			sex:sex,
+			    	    			department:department,
+			    	    			doctor:doctor,
+			    	    			serviceDate:serviceDate,
+			    	    			picktime:picktime,
+			    	    			gHaoTime:gHaoTime
+			    	    	}  
+			    	    	$.post(questURL,questArr,function(result){
+			    	    		if(result){
+			    	    			alert("挂号成功");
+			    	    			window.location.href="register.html";
+			    	    			//return false;
+			    	    		}else{
+			    	    			alert("挂号失败");
+			    	    			reload.location;
+			    	    		}
+			    	    		
+			    	    	});
+						}else{
+							alert("挂号失败！");
+							return false;
+							}
+		  			}
+		  			
+				 
+	  		});
+	  		
+	  	
+		    
+		$('ul li').on('touchend',function(){
+			/*var target=$(this).slibings().find('li');*/
+			$(this).children('p').css({
+				 'background':'url("assets/image/productAdmin/order/checked.png") left center no-repeat',
+				 'background-size':'1.3em'
+				 }).attr('data-val',1); 
+			$(this).siblings().children('p').css({
+				  'background':'url("assets/image/productAdmin/order/defaut.png") left center no-repeat',
+				 'background-size':'1.3em'
+				 }).attr('data-val',0);
+		});
+		
+		
+		/*点击关闭按钮*/
+		$('.close').on('click',function(){
+			var pModal=$(this).parents('.modal');
+			$('.modal').slideUp('500',function(){
+				$('.bg').hide();
+			});
+		});
+		
+		/*点击关闭按钮*/
+		
+		$('.notes .cancel,.notes .close').on('click',function(){
+			$('.notes input[name="notes"]').val(false);
+			$('.notes').hide();
+			$('.bg1').hide();
+		});
+		
+		$('.notes .confirm').on('click',function(){
+			$('.notes input[name="notes"]').val(true);
+			$('.notes').hide();
+			$('.bg1').hide();
+		});
+			
+		$(function(){
+			//查看医生详情
+	  		$('.head').on('click',function(){
+	  			var startDate=$('input[name="startDate"]').val();
+	  			var endDate=startDate;
+	  			var scheduleItemCode=$('input[name="scheduleItemCode"]').val();
+	  			var departmentCode=$('input[name="departmentCode"]').val();
+	  		   var	doctorCode = $(this).find('input[name="doctorCode"]').val();
+	  		   var from='2';
+	  			window.location.href="docDetail.html?doctorCode="+doctorCode+"&departmentCode="+departmentCode+"&startDate="+startDate+"&endDate="+endDate+"&scheduleItemCode="+scheduleItemCode+"&from="+from;
+	  		});
+			 //判断是否绑定了卡号,判断是否有就诊人
+			 idBindCard();
+			 function idBindCard(){
+				 var card_no=$('input[name="card_no"]').val();
+			    	if(!card_no){
+			    		$('#patientName').html('<p class="p1">您尚未绑定就诊卡。</p>').css('color','red');
+			    		$('span[class="patient_name"]').html("当前无就诊人");
+			    		alert("您当前没有绑定就诊卡,请先完善就诊信息！");
+			    		window.location.href="add_info.html";
+			    		return false;
+			    		
+			    	};
+			 }
+			 	
+		 });
+	  		
+         </script>
+    </body>
+</html>

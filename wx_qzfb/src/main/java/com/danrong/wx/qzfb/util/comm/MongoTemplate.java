@@ -1,0 +1,207 @@
+package com.danrong.wx.qzfb.util.comm;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
+import com.mongodb.Mongo;
+
+public class MongoTemplate {
+
+  private final static Logger logger = LoggerFactory.getLogger(MongoTemplate.class);
+  private final static ObjectMapper mapper = new ObjectMapper();
+  private Mongo mongo;
+  private DB db;
+  private DBCollection coll_card;
+  private DBCollection coll_user;
+  private DBCollection coll_log;
+  private DBCollection coll_order;
+  private static MongoTemplate INSTANCE = null;
+  private final Map<String, DBCollection> dbc_map = new HashMap<>();
+
+  public static MongoTemplate getInstance() {
+    if (INSTANCE == null) {
+      synchronized (MongoTemplate.class) {
+        if (INSTANCE == null) {
+          INSTANCE = new MongoTemplate();
+        }
+      }
+    }
+    return INSTANCE;
+  }
+
+  private MongoTemplate() {
+    try {
+      BufferedReader fileReader = new BufferedReader(new InputStreamReader(
+          JsonParser.class.getResourceAsStream("/wx_qzfb_config.txt")));
+
+      JsonNode rootNode = mapper.readTree(fileReader);
+
+      this.mongo = new Mongo(rootNode.path("qzfb.db.host").getTextValue().trim());
+      this.db = mongo.getDB(rootNode.path("qzfb.db.dbname").getTextValue().trim());
+      this.db.authenticate(rootNode.path("qzfb.db.username").getTextValue().trim(), rootNode.path("qzfb.db.passwd")
+          .getTextValue().trim().toCharArray());
+      this.coll_card = db.getCollection(rootNode.path("qzfb.coll.card").getTextValue().trim());
+      this.coll_user = db.getCollection(rootNode.path("qzfb.coll.user").getTextValue().trim());
+      this.coll_log = db.getCollection(rootNode.path("qzfb.coll.log").getTextValue().trim());
+      this.coll_order = db.getCollection(rootNode.path("qzfb.coll.order").getTextValue().trim());
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    initial_dbc_map();
+  }
+
+  private void initial_dbc_map() {
+    this.dbc_map.put(TableName.COLLECTION_NAME_CARD, this.coll_card);
+    this.dbc_map.put(TableName.COLLECTION_NAME_USER, this.coll_user);
+    this.dbc_map.put(TableName.COLLECTION_NAME_LOG, this.coll_log);
+    this.dbc_map.put(TableName.COLLECTION_NAME_ORDER, this.coll_order);
+  }
+
+  /**
+   * 数据库查找操作
+   * 
+   * @param query
+   * @param collection
+   * @return
+   */
+  public DBObject find(DBObject query, String collection) {
+    try {
+      if (StringUtils.isNotBlank(collection) && query != null) {
+        DBCollection coll = this.dbc_map.get(collection);
+        if (coll == null) return null;
+        else {
+          return coll.findOne(query);
+        }
+      } else {
+        return null;
+      }
+    } catch (Exception e) {
+      logger.info(e.toString() + "--" + "查找数据错误:" + mongo + ";" + db + ";" + collection + ";" + query);
+      return null;
+    }
+  }
+
+  /**
+   * 数据库插入操作
+   * 
+   * @param dbo
+   * @param collection
+   * @return
+   */
+  public boolean insert(DBObject dbo, String collection) {
+    try {
+      if (StringUtils.isNotBlank(collection) && dbo != null) {
+        DBCollection coll = this.dbc_map.get(collection);
+        if (coll == null) return false;
+        else {
+          coll.insert(dbo);
+          return true;
+        }
+      } else {
+        return false;
+      }
+    } catch (Exception e) {
+      logger.info(e.toString() + "--" + "插入数据错误:" + mongo + ";" + db + ";" + collection + ";" + dbo);
+      return false;
+    }
+  }
+
+  /**
+   * 数据库更新操作
+   * 
+   * @param old
+   * @param current
+   * @param collection
+   * @return
+   */
+  public int update(DBObject old, DBObject current, String collection) {
+    try {
+      if (StringUtils.isNotBlank(collection) && old != null && current != null) {
+        DBCollection coll = this.dbc_map.get(collection);
+        if (coll == null) return DbOption.DBOPTION_FAILER;
+        else {
+          current.removeField(JSTLField._id);
+          coll.update(old, new BasicDBObject("$set", current));
+          return DbOption.DBOPTION_SUCCESS;
+        }
+      } else {
+        return DbOption.DBOPTION_FAILER;
+      }
+    } catch (Exception e) {
+      logger.info(e.toString() + "--" + "更新数据错误:" + mongo + ";" + db + ";" + collection + ";" + old + ";" + current);
+      return DbOption.DBOPTION_FAILER;
+    }
+  }
+
+  /**
+   * 数据库删除操作
+   * 
+   * @param deleteQuery
+   * @param collection
+   * @return
+   */
+  public boolean delete(DBObject deleteQuery, String collection) {
+    try {
+      if (StringUtils.isNotBlank(collection) && deleteQuery != null) {
+        DBCollection coll = this.dbc_map.get(collection);
+        if (coll == null) return false;
+        else {
+          coll.remove(deleteQuery);
+          return true;
+        }
+      } else {
+        return false;
+      }
+    } catch (Exception e) {
+      logger.info(e.toString() + "--" + "删除数据错误:" + mongo + ";" + db + ";" + collection + ";" + deleteQuery);
+      return false;
+    }
+  }
+
+  /**
+   * 搜索，返回列表
+   * 
+   * @param collection
+   * @param query
+   * @param fields
+   * @param skip
+   * @param limit
+   * @param sort
+   * @return List<DBObject>
+   */
+  public List<DBObject> search(String collection, DBObject query, DBObject fields, int skip, int limit, DBObject sort) {
+    if (StringUtils.isBlank(collection)) return null;
+    DBCollection coll = this.dbc_map.get(collection);
+    if (coll == null) return null;
+    if (query == null) query = new BasicDBObject();
+    if (fields == null) fields = new BasicDBObject();
+    List<DBObject> l = new LinkedList<>();
+
+    DBCursor cur = coll.find(query, fields);
+    if (skip >= 0) cur = cur.skip(skip);
+    if (limit >= 0) cur = cur.limit(limit);
+    if (sort != null) cur = cur.sort(sort);
+
+    while (cur.hasNext())
+      l.add(cur.next());
+
+    cur.close();
+    return l;
+  }
+}

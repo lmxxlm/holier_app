@@ -1,0 +1,44 @@
+package com.danrong.wx.qzfb.module.myinfo;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.danrong.wx.qzfb.util.comm.DBTools;
+import com.danrong.wx.qzfb.util.comm.JSTLField;
+import com.danrong.wx.qzfb.util.comm.MongoTemplate;
+import com.danrong.wx.qzfb.util.comm.TableName;
+import com.danrong.wx.qzfb.util.wxauth.SnsUserInfo;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
+
+public class UserModuleImpl implements UserModule {
+
+  public static final Logger logger = LoggerFactory.getLogger(UserModuleImpl.class);
+  private MongoTemplate mongoTemplate = MongoTemplate.getInstance();
+
+  @Override
+  public boolean inset(SnsUserInfo user) {
+    return this.mongoTemplate.insert(DBTools.bean2DBObject(user), TableName.COLLECTION_NAME_USER);
+  }
+
+  @Override
+  public String getUserImage(String openid) {
+    DBObject query = new BasicDBObject();
+    query.put(JSTLField.openid, openid);
+
+    DBObject dbo = this.mongoTemplate.find(query, TableName.COLLECTION_NAME_USER);
+    if (dbo == null) return null;
+    else return dbo.get(JSTLField.headimgurl) == null ? null : dbo.get(JSTLField.headimgurl).toString();
+  }
+
+  @Override
+  public SnsUserInfo find(String wex_id) {
+    DBObject query = new BasicDBObject();
+    query.put(JSTLField.openid, wex_id);
+
+    DBObject dbo = this.mongoTemplate.find(query, TableName.COLLECTION_NAME_USER);
+    if (dbo == null) return null;
+    else return DBTools.dbObject2Bean(dbo, new SnsUserInfo());
+  }
+
+}

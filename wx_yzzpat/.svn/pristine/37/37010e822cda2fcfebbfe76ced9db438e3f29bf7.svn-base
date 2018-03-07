@@ -1,0 +1,8 @@
+package com.danrong.wx.yzzpat.module;
+
+import java.util.Map;
+
+public interface KfOrderModule {
+
+  public int submitOrder(Map<String, Object> order);
+}

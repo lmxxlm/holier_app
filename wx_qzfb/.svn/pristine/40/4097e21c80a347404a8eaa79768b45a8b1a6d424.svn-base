@@ -1,0 +1,56 @@
+package com.danrong.wx.qzfb.controller;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.danrong.wx.qzfb.module.message.MessageModule;
+import com.danrong.wx.qzfb.module.message.MessageModuleImpl;
+import com.danrong.wx.qzfb.util.comm.HttpRequestUtil;
+import com.danrong.wx.qzfb.util.comm.JSTLField;
+import com.danrong.wx.qzfb.util.comm.ViewName;
+import com.danrong.wx.qzfb.util.wx.Config;
+import com.danrong.wx.qzfb.util.wx.FieldName;
+import com.danrong.wx.qzfb.util.wxauth.AuthUtil;
+import com.danrong.wx.qzfb.util.xml.MessageUtil;
+
+@Controller
+public class IndexController {
+
+  @Value("#{properties['wx_qzfb.web.host']}")
+  public String mainUrl;
+
+  private HttpRequestUtil httpRequestUtil = new HttpRequestUtil();
+  private MessageModule messageModule = new MessageModuleImpl();
+
+  @RequestMapping(value = "/", produces = { "application/json;charset=UTF-8" })
+  @ResponseBody
+  public String root(HttpServletRequest request, HttpServletResponse response) {
+    String openid = request.getParameter(FieldName.openid);
+    if (StringUtils.isNotBlank(openid)) {
+      String xmlStr = httpRequestUtil.getXmlFromHttpServletRequest(request);
+      return messageModule.messageHandler(MessageUtil.wx_xmlToMap(xmlStr, Config.charset));
+    } else {
+      boolean authSuccess = AuthUtil.wexAuth(AuthUtil.token, request.getParameter(FieldName.timestamp),
+          request.getParameter(FieldName.nonce), request.getParameter(FieldName.signature));
+
+      if (authSuccess) return request.getParameter(FieldName.echostr);
+      else return null;
+    }
+  }
+
+  @RequestMapping(value = ViewName.index)
+  public ModelAndView index(HttpServletRequest request, HttpServletResponse response) {
+    ModelAndView view = new ModelAndView();
+    view.setViewName(ViewName.index);
+    view.addObject(JSTLField.mainUrl, mainUrl.trim());
+    return view;
+  }
+
+}

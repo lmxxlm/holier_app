@@ -1,0 +1,180 @@
+package com.danrong.wx.qzfb.controller;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.danrong.wx.qzfb.module.message.MessageModule;
+import com.danrong.wx.qzfb.module.message.MessageModuleImpl;
+import com.danrong.wx.qzfb.module.myinfo.BindCard;
+import com.danrong.wx.qzfb.module.myinfo.BindCardImpl;
+import com.danrong.wx.qzfb.module.myinfo.Card;
+import com.danrong.wx.qzfb.module.myinfo.CardType;
+import com.danrong.wx.qzfb.module.myinfo.CreatCardResult;
+import com.danrong.wx.qzfb.service.MyInfoService;
+import com.danrong.wx.qzfb.service.UserService;
+import com.danrong.wx.qzfb.util.comm.BirthdayUtil;
+import com.danrong.wx.qzfb.util.comm.Help;
+import com.danrong.wx.qzfb.util.comm.JSTLField;
+import com.danrong.wx.qzfb.util.comm.SessionUtil;
+import com.danrong.wx.qzfb.util.comm.ViewName;
+import com.danrong.wx.qzfb.util.wxauth.SnsUserInfo;
+import com.danrong.wx.qzfb.util.xml.Config;
+
+@Controller
+public class MyInfoController {
+
+  @Value("#{properties['wx_qzfb.web.host']}")
+  public String mainUrl;
+
+  private MyInfoService myInfoService = new MyInfoService();
+  private MessageModule messageModule = new MessageModuleImpl();
+  private UserService userService = new UserService();
+  private SessionUtil sessionUtil = new SessionUtil();
+  private BindCard bindCard = new BindCardImpl();
+
+  @RequestMapping(value = ViewName.my_info)
+  public ModelAndView my_info(HttpServletRequest request, HttpServletResponse response) {
+    ModelAndView view = new ModelAndView();
+    view.setViewName(ViewName.my_info);
+    view.addObject(JSTLField.mainUrl, mainUrl.trim());
+    // 获取数据
+    List<Card> list = myInfoService.list(sessionUtil.getUserOpenid(request.getSession()));
+    if(list == null || list.size()==0) view.addObject("noRecord", true);
+    view.addObject(JSTLField.data, list);
+    return view;
+  }
+
+  @RequestMapping(value = ViewName.detail_info)
+  public ModelAndView detailInfo(String card_id, HttpServletRequest request, HttpServletResponse response) {
+    ModelAndView view = new ModelAndView();
+    view.setViewName(ViewName.detail_info);
+    view.addObject(JSTLField.mainUrl, mainUrl.trim());
+    // 获取数据
+    Card card = myInfoService.detail(card_id);
+    view.addObject(JSTLField.card, card);
+
+    if (card != null) {
+      SnsUserInfo userInfo = userService.getUserInfoDetail(card.getWex_id());
+      view.addObject(JSTLField.sns_user_info, userInfo);
+    }
+    return view;
+  }
+
+  @RequestMapping(value = ViewName.add_info)
+  public ModelAndView add_info(HttpServletRequest request, HttpServletResponse response) {
+    ModelAndView view = new ModelAndView();
+    view.setViewName(ViewName.add_info);
+    view.addObject(JSTLField.mainUrl, mainUrl.trim());
+    return view;
+  }
+
+  @RequestMapping(value = ViewName.myinfo_card_bind)
+  public void card_bind(@ModelAttribute Card card, HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
+    if (card != null && card.isNotEmpty()) {
+      // 如果card_type = 02;先判断是否已建卡，否则帮助建卡
+      if (CardType.id_no.equals(card.getC_type())) {
+        // 查询建卡
+        boolean hasCreated = bindCard.hasCard(card);
+        if (!hasCreated) {
+          // 建卡
+          // 设置生日
+          String idNo = card.getCard_no();
+          String birthday = BirthdayUtil.getBirthDayByIdNo(idNo);
+          card.setBirthday(birthday);
+          CreatCardResult ccr = bindCard.creatCard(card);
+          if (ccr != null && "0".equals(ccr.getResultCode())) {
+            // 发送消息
+            sendTemplateMsg(ccr, request, card);
+          }
+        }
+        // 入库
+        myInfoService.add(card);
+        // 新绑定的卡设置为默认
+        myInfoService.setDefaultCard(card);
+      }
+      response.sendRedirect(mainUrl + ViewName.my_info);
+    }
+  }
+
+  @RequestMapping(value = ViewName.onlineBuildCard)
+  @ResponseBody
+  public boolean onlineBuildCard(@ModelAttribute Card pc, HttpServletRequest request, HttpServletResponse response) {
+    CreatCardResult ccr = bindCard.creatCard(pc);
+    if (ccr == null) return false;
+    else {
+      if ("0".equals(ccr.getResultCode())) {
+        // 添加系统卡号并设置为默认
+        Card card = new Card();
+        card.setCard_no(ccr.getPatientCard());
+        card.setPatient_name(pc.getPatient_name());
+        card.setTelephone(pc.getTelephone());
+        card.setWex_id(sessionUtil.getUserOpenid(request.getSession()));
+        myInfoService.add(card);
+        myInfoService.setDefaultCard(card);
+        // 推送模板消息
+        sendTemplateMsg(ccr, request, pc);
+        return true;
+      } else return false;
+    }
+  }
+
+  @RequestMapping(value = ViewName.myinfo_card_remove_bind)
+  @ResponseBody
+  public boolean myinfo_card_remove_bind(@ModelAttribute Card card, HttpServletRequest request,
+      HttpServletResponse response) {
+    return myInfoService.removeBind(card);
+  }
+
+  @RequestMapping(value = ViewName.setting_card_default)
+  @ResponseBody
+  public boolean setting_card_default(@ModelAttribute Card card, HttpServletRequest request,
+      HttpServletResponse response) {
+    return myInfoService.setDefaultCard(card);
+  }
+
+  private void sendTemplateMsg(CreatCardResult ccr, HttpServletRequest request, Card card) {
+    // 推送模板消息
+    Map<String, Object> data = new HashMap<>();
+    data.put("touser", sessionUtil.getUserOpenid(request.getSession()));
+    data.put("template_id", Config.create_card_template_id);
+    data.put("url", Config.template_url);
+
+    Map<String, Map<String, Object>> dmap = new HashMap<>();
+
+    Map<String, Object> obj1 = new HashMap<>();
+    obj1.put("value", "您的身份证" + ccr.getPatientCard() + "成功完成了衢州妇保院建卡操作");
+    obj1.put("color", "#173177");
+    dmap.put("first", obj1);
+
+    Map<String, Object> obj2 = new HashMap<>();
+    obj2.put("value", ccr.getPatientID());
+    obj2.put("color", "#173177");
+    dmap.put("keyword1", obj2);
+
+    Map<String, Object> obj3 = new HashMap<>();
+    obj3.put("value", card.getPatient_name());
+    obj3.put("color", "#173177");
+    dmap.put("keyword2", obj3);
+
+    Map<String, Object> obj4 = new HashMap<>();
+    obj4.put("value", "如有疑问，请留言！");
+    obj4.put("color", "#173177");
+    dmap.put("remark", obj4);
+
+    data.put("data", dmap);
+    messageModule.sendTemplate(Help.bean2Json(data));
+  }
+}

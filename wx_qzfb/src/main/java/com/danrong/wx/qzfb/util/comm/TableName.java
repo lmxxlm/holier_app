@@ -1,0 +1,9 @@
+package com.danrong.wx.qzfb.util.comm;
+
+public class TableName {
+
+  public static final String COLLECTION_NAME_CARD = "card";
+  public static final String COLLECTION_NAME_USER = "user";
+  public static final String COLLECTION_NAME_LOG = "log";
+  public static final String COLLECTION_NAME_ORDER = "order";
+}

@@ -1,0 +1,16 @@
+{
+      "wx_qzfb.web.ip":"${wx_qzfb.web.ip}",
+      "wx_qzfb.info.logpath":"${wx_qzfb.info.logpath}",
+      "wx_qzfb.doctor.data.filename":"${wx_qzfb.doctor.data.filename}",
+      "qzfb.db.host":"${qzfb.db.host}",
+      "qzfb.db.dbname":"${qzfb.db.dbname}",
+      "qzfb.db.passwd":"${qzfb.db.passwd}",
+      "qzfb.db.username":"${qzfb.db.username}",
+      "qzfb.coll.card":"${qzfb.coll.card}",
+      "qzfb.coll.user":"${qzfb.coll.user}",
+      "qzfb.coll.log":"${qzfb.coll.log}",
+      "qzfb.coll.order":"${qzfb.coll.order}",
+      "wx.appid":"${wx.appid}",
+      "wx.secret":"${wx.secret}",
+      "wx.token":"${wx.token}" 
+}

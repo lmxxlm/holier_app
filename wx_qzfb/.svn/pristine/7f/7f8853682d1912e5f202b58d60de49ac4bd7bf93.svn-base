@@ -1,0 +1,89 @@
+@charset "utf-8";
+/* CSS Document */
+
+body{
+	background:#EEF1F3;}
+	span{display:inline-block;}
+	ul,li,p{margin:0; padding:0;}
+	
+	
+
+.main,.message,ul li{
+	width:100%;
+	
+}
+.main .message ul li{ 
+	list-style-type:none;
+	line-height:3em;
+	height:3em;
+	background:#fff;
+	}
+.main .message ul li input{
+	border:none;
+	font-size:1em;
+	color:#999999;
+	padding-left:3em;
+	margin-left:1.2em;
+	}
+.main .message ul .li1 input{
+	  background:url("../../image/productAdmin/add_info/p.png") left center no-repeat;
+    background-size:1.5em;  
+	}
+.main .message ul .li2 input{
+	  background:url("../../image/productAdmin/add_info/num.png") left center no-repeat;
+       background-size:1.5em;
+	}
+.main .message ul .li3 input{
+	  background:url("../../image/productAdmin/add_info/tel.png") left center no-repeat;
+       background-size:1.5em;  
+	}
+
+.main .message ul .li4 input{
+	  background:url("../../image/productAdmin/add_info/address.png") left center no-repeat;
+       background-size:1.5em;  
+	}
+.main .message ul .main_li{
+	border-bottom:1px solid #E1E1E1;
+	border-top:1px solid #E1E1E1;
+	
+	}	
+.main .message ul li.li3{border-bottom:1px solid #E1E1E1;}
+.main .message p{
+	padding:0.5em 1em;
+	color:#9C9C9C;
+	
+	}
+	
+.main .message .button{
+	width:100%;
+	text-align:center;
+	
+	display:-moz-box;
+    display:-webkit-box;
+    display:box;
+	}	
+	/*
+.main .message button{
+	display:-moz-box;
+    display:-webkit-box;
+    display:box; 
+    
+	-moz-box-flex:1;
+    -webkit-box-flex:1;
+    box-flex:1;
+    text-align:center;
+    margin:0 1em;
+	height:2.4em;
+	background:#41b2a6;
+	color:#FFF;
+	border:none;
+	border-radius:0.3em;
+	font-size:1em;
+	
+	}
+	
+	
+	*/
+	
+	
+	

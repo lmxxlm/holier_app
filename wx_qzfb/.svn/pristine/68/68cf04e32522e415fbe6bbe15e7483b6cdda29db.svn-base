@@ -1,0 +1,139 @@
+package com.danrong.wx.qzfb.util.xml;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import com.danrong.wx.qzfb.util.comm.TimeUtil;
+
+public class TimeSplit {
+
+  public static void main(String[] args) {
+    List<TimeSplitItem> ll = TimeSplit.split("7:30", "12:00",
+        "1,2,3,4,5,7,8,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25", 5);
+    for (TimeSplitItem item : ll) {
+      System.out.print(item.getStartTime() + "-" + item.getEndTime() + " " + item.getCount() + "   ");
+      for (String s : item.getNumArray()) {
+        System.out.print(s + ",");
+      }
+      System.out.println();
+      for (Map<String, String> map : item.getNumMapArray()) {
+        String stime = map.get("start");
+        String etime = map.get("end");
+        String index = map.get("index");
+        System.out.println("==========================" + stime + "-" + etime + "  :  " + index);
+      }
+      System.out.println();
+    }
+  }
+
+  public static final int dd = 30;
+
+  public static List<TimeSplitItem> split(String start, String end, String num, int time_d) {
+    List<TimeSplitItem> list = new LinkedList<>();
+
+    long d = dd * 60;
+    long i = TimeUtil.time2num(start);
+    long j = TimeUtil.time2num(end);
+    List<String> indexList = new LinkedList<>();
+    for (; i < j;) {
+      long m = i;
+      long n = i + d;
+      i = n;
+      if (n > j) n = j;
+
+      TimeSplitItem tsi = new TimeSplitItem();
+      String st = TimeUtil.num2time(m);
+      indexList.add(st);
+      tsi.setStartTime(st);
+      tsi.setEndTime(TimeUtil.num2time(n));
+      tsi.setNumArray(new LinkedList<String>());
+      list.add(tsi);
+    }
+    int a = list.size();
+    int b = dd / time_d;
+    String[] numArr = num.split(",");
+    for (int k = 0; k < numArr.length; k++) {
+      int v = Integer.parseInt(numArr[k]);
+      int index = (v - 1) / b;
+      if (index >= a) index = a - 1;
+      list.get(index).getNumArray().add(v + "");
+    }
+
+    for (int m = 0; m < a; m++) {
+      list.get(m).setCount(list.get(m).getNumArray().size());
+
+      List<String> numArrary = list.get(m).getNumArray();
+      String sub_starttime = list.get(m).getStartTime();
+      int idx = indexList.indexOf(sub_starttime);
+      int n_idx = b * idx + 1;
+
+      String sub_endtime = list.get(m).getEndTime();
+      long sub_i = TimeUtil.time2num(sub_starttime);
+      long sub_j = TimeUtil.time2num(sub_endtime);
+      List<String[]> sub_time_list = new LinkedList<>();
+      long sub_d = time_d * 60;
+      for (; sub_i < sub_j;) {
+        long mm = sub_i;
+        long nn = sub_i + sub_d;
+        sub_i = nn;
+        if (nn > sub_j) nn = sub_j;
+
+        String sub_st = TimeUtil.num2time(mm);
+        String sub_et = TimeUtil.num2time(nn);
+        String[] sub_time_arr = new String[] { sub_st, sub_et };
+        sub_time_list.add(sub_time_arr);
+      }
+
+      List<Map<String, String>> numMapArray = new LinkedList<>();
+      for (int h = 0; h < b; h++) {
+        String hao = n_idx + h + "";
+        if (!numArrary.contains(hao)) continue;
+        Map<String, String> map = new HashMap<>();
+        String[] arr = sub_time_list.get(h);
+        map.put("start", arr[0]);
+        map.put("end", arr[1]);
+        map.put("index", hao);
+        numMapArray.add(map);
+      }
+      list.get(m).setNumMapArray(numMapArray);
+    }
+    // String[] numArr = num.split(",");
+    // int a = list.size();
+    // int n = 0;
+    // if (numArr != null && numArr.length > 0) {
+    // n = Integer.parseInt(numArr[numArr.length - 1]);
+    // int b = n / a;
+    //
+    // if (b == 0) {
+    // list.clear();
+    // TimeSplitItem tsi = new TimeSplitItem();
+    // tsi.setStartTime(start);
+    // tsi.setEndTime(end);
+    //
+    // List<String> lll = new ArrayList<>(1);
+    // for (int x = 0; x < numArr.length; lll.add(numArr[x]), x++);
+    // tsi.setNumArray(lll);
+    //
+    // list.add(tsi);
+    // return list;
+    // }
+    //
+    // for (int x = 0; x < numArr.length; x++) {
+    // int v = Integer.parseInt(numArr[x]);
+    // int index = v / b;
+    // int w = v % b;
+    // if (w > 0) index = index + 1;
+    //
+    // index -= 1;
+    // if (index < a) {
+    // list.get(index).getNumArray().add(v + "");
+    // }
+    // }
+    //
+    // }
+
+    return list;
+  }
+}

@@ -1,0 +1,248 @@
+package com.danrong.wx.yzzpat.module;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.danrong.medex.bean.Account;
+import com.danrong.medex.bean.Patient;
+import com.danrong.medex.configure.MedexConfigure;
+import com.danrong.medex.configure.TableFieldName;
+import com.danrong.medex.module.AccountModule;
+import com.danrong.medex.module.AccountModuleImpl;
+import com.danrong.medex.module.PatientModule;
+import com.danrong.medex.module.PatientModuleImpl;
+import com.danrong.medex.module.SendMessageCallBackImpl;
+import com.danrong.medex.module.SendMessageImpl;
+import com.danrong.medex.module.v2.kfhospital.V2KfBedroomModule;
+import com.danrong.medex.module.v2.kfhospital.V2KfBedroomModuleImpl;
+import com.danrong.medex.module.v2.kfhospital.V2KfHospitalModule;
+import com.danrong.medex.module.v2.kfhospital.V2KfHospitalModuleImpl;
+import com.danrong.medex.module.v2.order.V2KfOrderModule;
+import com.danrong.medex.module.v2.order.V2KfOrderModuleImpl;
+import com.danrong.medex.module.v2.order.V2KfOrderWxMapModule;
+import com.danrong.medex.module.v2.order.V2KfOrderWxMapModuleImpl;
+import com.danrong.medex.util.Help;
+import com.danrong.medex.util.MedexLog;
+import com.danrong.medex.util.MedexLogImpl;
+import com.danrong.medex.util.MessageUtil;
+import com.danrong.medex.util.v2.KfOrderSearchQuery;
+import com.danrong.medex.util.v2.KfOrderStatus;
+import com.danrong.medex.util.v2.V2PhoneMessageTemplate;
+import com.danrong.wx.yzzpat.util.Config;
+import com.dr.core.util.TimeUtil;
+
+public class KfOrderModuleImpl implements KfOrderModule {
+
+  private final V2KfOrderModule v2KfOrderModule;
+  private final V2KfHospitalModule v2KfHospitalModule;
+  private final V2KfBedroomModule v2KfBedroomModule;
+  private final PatientModule patientModule;
+  private final AccountModule accountModule;
+  private final V2KfOrderWxMapModule v2KfOrderWxMapModule;
+  private MessageModule messageModule;
+  private final MedexLog alog;
+  private final TimeUtil timeUtil;
+
+  public KfOrderModuleImpl() {
+    // 初始化
+    this.v2KfHospitalModule = new V2KfHospitalModuleImpl();
+    this.v2KfBedroomModule = new V2KfBedroomModuleImpl();
+    this.v2KfOrderModule = new V2KfOrderModuleImpl();
+    this.alog = MedexLogImpl.getInstance();
+    this.timeUtil = new TimeUtil();
+    this.patientModule = new PatientModuleImpl();
+    this.accountModule = new AccountModuleImpl();
+    this.v2KfOrderWxMapModule = new V2KfOrderWxMapModuleImpl();
+    messageModule = new MessageModuleImpl();
+  }
+
+  @Override
+  public int submitOrder(Map<String, Object> order, String openid) {
+    Map<String, Object> logData = new HashMap<>();
+
+    // 判断患者有没有未处理的订单(待转院确认)
+    Object patient_phone = order.get("patient_phone");
+    if (patient_phone == null) {
+      return 406;
+    } else {
+      KfOrderSearchQuery query = new KfOrderSearchQuery();
+      query.setPatient_id(patient_phone.toString());
+      query.setStatus(KfOrderStatus.during_transfer);
+
+      List<Map<String, Object>> orders = v2KfOrderModule.getOrderList(query);
+      boolean hasUnPayedOrder = true;
+      if (orders == null || orders.isEmpty()) hasUnPayedOrder = false;
+      if (hasUnPayedOrder) {
+        return 403;
+      } else {
+        if (order.get("hospital_id") == null || order.get("bedroom_id") == null || order.get("patient_name") == null
+            || order.get("check_in_time") == null || order.get("transfer_time") == null) {
+          return 406;
+        } else {
+          // 判断医院和病房是否存在
+          String hospital_id = order.get("hospital_id").toString();
+          String bedroom_id = order.get("bedroom_id").toString();
+
+          boolean hospital_exist = v2KfHospitalModule.exist(hospital_id);
+          boolean bedroom_exist = v2KfBedroomModule.exist(bedroom_id);
+
+          if (!hospital_exist || !bedroom_exist) {
+            return 405;
+          } else {
+            Map<String, Object> kfhospital = v2KfHospitalModule.findByHospitalId(hospital_id);
+            Map<String, Object> kfbedroom = v2KfBedroomModule.getKfBedroomDetail(bedroom_id);
+
+            // 获取数据
+            order.put("hospital_name", kfhospital.get("name"));
+            order.put("reward", kfhospital.get("reward"));
+            order.put("bedroom_name", kfbedroom.get("name"));
+
+            String data = v2KfOrderModule.submitOrder(order);
+            if (StringUtils.isNotBlank(data)) {
+              // 绑定openid和orderid
+              v2KfOrderWxMapModule.bind(openid, data);
+
+              // 判断患者是否存在，否则注册患者
+              Account patient_account = accountModule.findAccountByAccountIdAndType(
+                  (String) order.get("patient_phone"), MedexConfigure.destPatientType);
+              if (patient_account == null) {
+                patientModule.addPatient(
+                    new Patient((String) order.get("patient_phone"), (String) order.get("patient_name")), false);
+              }
+              // 给OP发短信
+              sendMessageToOp(data);
+              // 给患者发短信
+              String phone_message_to_patient = V2PhoneMessageTemplate.template.get("v2_19");
+
+              List<String> values = new ArrayList<>();
+
+              values.add((String) kfhospital.get("name"));
+              phone_message_to_patient = MessageUtil.replace(phone_message_to_patient, values);
+              new Thread(new SendMessageImpl((String) order.get("patient_phone"), phone_message_to_patient,
+                  new SendMessageCallBackImpl())).start();
+
+              // 记录日志
+              logData.put("type", "patient submit transfer order");
+              logData.put(TableFieldName.userid, (String) order.get("patient_phone"));
+              logData.put(TableFieldName.visitTime, timeUtil.now2l());
+              alog.info(logData);
+
+              // 模板消息
+              Map<String, Object> template_message_data = new LinkedHashMap<>();
+              template_message_data.put("touser", openid);
+              template_message_data.put("template_id", Config.order_success_template_id);
+              template_message_data.put("url", Config.template_url);
+
+              Map<String, Map<String, Object>> dmap = new LinkedHashMap<>();
+
+              Map<String, Object> obj1 = new LinkedHashMap<>();
+              obj1.put("value", "您好，您已成功申请转院");
+              obj1.put("color", "#173177");
+              dmap.put("first", obj1);
+
+              Map<String, Object> obj2 = new LinkedHashMap<>();
+              obj2.put("value", data);
+              obj2.put("color", "#173177");
+              dmap.put("keyword1", obj2);
+
+              Map<String, Object> obj3 = new LinkedHashMap<>();
+              obj3.put("value", String.format("%s--%s", kfhospital.get("name"), kfbedroom.get("name")));
+              obj3.put("color", "#173177");
+              dmap.put("keyword2", obj3);
+
+              Map<String, Object> obj4 = new LinkedHashMap<>();
+              obj4.put("value", order.get("patient_phone"));
+              obj4.put("color", "#173177");
+              dmap.put("keyword3", obj4);
+
+              Map<String, Object> obj5 = new LinkedHashMap<>();
+              obj5.put("value", timeUtil.now2s());
+              obj5.put("color", "#173177");
+              dmap.put("keyword4", obj5);
+
+              Map<String, Object> obj8 = new LinkedHashMap<>();
+              obj8.put("value", String.format("如有疑问，请咨询：%s", MedexConfigure.hotline));
+              obj8.put("color", "#173177");
+              dmap.put("remark", obj8);
+
+              template_message_data.put("data", dmap);
+              messageModule.sendTemplate(Help.bean2Json(template_message_data));
+
+              return 0;
+            } else {
+              return 401;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  private void sendMessageToOp(String orderId) {
+    String message = "您有新的康复转院订单：" + orderId;
+    for (String telephone : com.danrong.medex.module.OrderModuleImpl.op_tel_map.keySet()) {
+      new Thread(new SendMessageImpl(telephone, message, new SendMessageCallBackImpl())).start();
+    }
+  }
+
+  @Override
+  public List<Map<String, Object>> list(String wxid, int cp, int ps) {
+    List<String> orderids = v2KfOrderWxMapModule.getOrderIdsByWxid(wxid, cp, ps);
+    List<Map<String, Object>> data = new LinkedList<>();
+    for (String orderid : orderids) {
+      Map<String, Object> map = v2KfOrderModule.getOrderDetail(orderid);
+      Map<String, Object> subdata = new HashMap<>();
+      subdata.put("orderid", map.get("orderid"));
+      subdata.put("status", map.get("status"));
+      subdata.put("hospital_name", map.get("hospital_name"));
+      subdata.put("bedroom_name", map.get("bedroom_name"));
+      subdata.put("check_in_time", timeUtil.l2s2((long) map.get("check_in_time")));
+      subdata.put("create_time", timeUtil.l2s((long) map.get("create_time")));
+      subdata.put("patient_name", map.get("patient_name"));
+      data.add(subdata);
+    }
+
+    return data;
+  }
+
+  @Override
+  public Map<String, Object> detail(String orderid) {
+    Map<String, Object> order = v2KfOrderModule.getOrderDetail(orderid);
+    Map<String, Object> resultdata = new HashMap<>();
+    resultdata.put("orderid", order.get("orderid"));
+    resultdata.put("status", order.get("status"));
+    Object pss_o = order.get("pss");
+    String pss = "否";
+    if (pss_o != null) {
+      boolean pss_v = (boolean) order.get("pss");
+      if (pss_v) pss = "是";
+    }
+    resultdata.put("pss", pss);
+    resultdata.put("hospital_name", order.get("hospital_name"));
+    resultdata.put("bedroom_name", order.get("bedroom_name"));
+    resultdata.put("check_in_time", timeUtil.l2s2((long) order.get("check_in_time")));
+    resultdata.put("patient_name", order.get("patient_name"));
+    resultdata.put("patient_phone", order.get("patient_phone"));
+    resultdata.put("transfer_time", timeUtil.l2s2((long) order.get("transfer_time")));
+    resultdata.put("hotline", MedexConfigure.hotline);
+    return resultdata;
+  }
+
+  @Override
+  public int calcel(String orderid, String openid) {
+    Map<String, Object> order = new HashMap<>();
+    order.put("orderid", orderid);
+    order.put("status", KfOrderStatus.cancel_transfer);
+
+    boolean data = v2KfOrderModule.update(order);
+    if (data) {
+      return 0;
+    } else return -1;
+  }
+}

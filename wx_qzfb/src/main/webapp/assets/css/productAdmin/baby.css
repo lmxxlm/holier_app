@@ -1,0 +1,27 @@
+@charset "utf-8";
+/* CSS Document */
+
+body{background:#EEF1F2;
+	
+	}
+*{margin:0;padding:0;}
+ul,li,div,span,a,input,img,button,br,form{padding:0;margin:0;display:inline-block;}
+p{margin:0;padding:0;white-space:nowrap;}
+.main{
+	display:block;
+	margin:0 auto;
+	width:30%;
+	background:#FAFAFA;
+	
+	}
+.main .f{width:94%;margin:4% 3%;}
+.main .f p{padding:2% 0;}
+hr{border-bottom:2px solid #000;border-top:none;}
+/*一些输入框*/
+input[type="text"]{border:none;width:10%;background:#FAFAFA;}
+/*文字边框*/
+.main .border{border:1px solid black;background:#fff;margin-top:5%;}
+/*压在边框上的字*/
+.main .border span{position:relative;top:-10px;left:20px;z-index:1000;backgroind:#FFF;background:white; opacity:1;}
+
+pre{padding:2% 5%;}

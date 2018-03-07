@@ -1,0 +1,227 @@
+@charset "utf-8";
+/* CSS Document */
+body{background:#EEF1F3;}
+p,span,div{display:inline-block;}
+p,div,ul,li{margin:0; padding:0;}
+.clear{clear:both;}
+.main{
+	width:30%;
+	display:block;
+	margin:0 auto;
+	padding-top:1%;
+	
+	}
+.main .part1{
+	width:100%;
+	background:#FFF;
+	}
+.main .part1 .head{
+	
+	width:100%;
+	border-bottom:1px solid #DADEE3;
+	white-space:nowrap;
+    background:white;
+	padding:3% 0;/*左右不能用padding*/
+	}
+
+.main .part1 .head .img{
+	
+	width:20%;
+	
+	border-bottom:2px solid #E8E8E8;
+	padding:2%;
+	vertical-align: middle;/*这个垂直居中一定要作用在目标元素上，记住是middle*/
+	margin-left:3%;
+	}
+.main .part1 .head .introduce{	
+	width:70%;
+	vertical-align: middle;
+	margin-left:3%;
+	}
+.main .part1 .head .introduce .p1{
+	display:inline-block;
+	font-weight:bold;
+	width:40%;
+	}
+.main .part1 .head .introduce span{
+	with:20%;
+	margin-left:7%;
+	color:#909090;
+	font-size:0.8em;
+	}	
+
+.main .part1 .head .introduce .p2{
+	
+	color:#7B7B7B;
+	width:40%;
+	font-size:0.9em;
+	margin-top:5%;
+	}
+	
+
+
+.main .info{
+	width:97%;
+	
+	padding-left:3%;
+	}
+.main .info em{color:#06C;}
+.main .info .info1,.info2,.info3{
+	width:100%;
+	padding:3% 0;
+	color:#8C8C8C;
+	border-bottom:1px solid #DADEE3;
+	}
+	.main .info .info1 .consu_name,.date{width:47%;}
+	.main .info .info1 .date{text-align:right;}
+	
+
+.main .info  .info2 .register,.money{width:47%;}
+.main .info .info2 .money{text-align:right;}
+
+.main .info  .info3 .name1,.name2{width:47%;}
+.main .info .info3 .name2{text-align:right;}
+
+
+
+.main .list{
+	width:100%;
+	background:#FFF;
+	margin-top:4%;
+	
+	}
+.main .list ul {
+	list-style-type:none;
+	width:100%
+
+	}
+
+.main .list ul li{
+	width:100%;
+	display:inline-block;
+    
+	}
+.main .list ul li p{
+	width:94%;
+	margin:0 3%;
+	border-bottom:1px solid #DADEE3;
+	padding:3% 0;
+	color:#333333;
+	white-space:nowrap;
+	background:url("../../image/productAdmin/catagery/默认.png") left center no-repeat;
+	background-size:5%; 
+	
+	}
+    .main .list ul li .span2{margin-left:10%;}
+	.main .list ul li .span2,.span3{width:45%;}
+	.main .list ul li .span3{text-align:right;}
+
+/*列表部分*/
+/*
+.main .list{
+	width:100%;
+	background:#FFF;
+	margin-top:4%;
+	
+	}
+.main .list ul {
+	list-style-type:none;
+	width:100%
+	
+	
+	}
+.main .list ul a{
+	width:100%;
+	display:inline-block;
+	text-decoration:none;
+	}
+.main .list ul li{
+	
+	width:94%;
+	margin:0 3%;
+	border-bottom:1px solid #DADEE3;
+	padding:3% 0;
+	color:#333333;
+	white-space:nowrap;
+	background:url("../img/catagery/默认.png") left center no-repeat;
+	background-size:5%; 
+	
+	}
+	
+.main .list ul li .span2{margin-left:10%;}
+.main .list ul li .span2,.span3{width:45%;}
+.main .list ul li .span3{text-align:right;}
+*/
+.main .fixed{
+	width:30%;
+	position:fixed;
+	background:#EEF1F3;
+	bottom:0;
+	text-align:center;
+	padding:0.5em 0;
+	}
+
+.main .fixed span{
+	width:80%;
+	
+	}
+.main .fixed span button{
+	width:100%;
+	padding:3% 0;
+	background:#359DE4;
+	color:#FFF;
+	font-weight:bold;
+	border-radius:0.5em;
+	border:none;
+	}
+
+
+  .icon1{
+	 background:url("../../image/productAdmin/catagery/选中.png") left center no-repeat;
+	 background-size:5%;
+	 }
+  .icon2{
+	  background:url("../../image/productAdmin/catagery/选中.png") left center no-repeat;
+	  background-size:5%;
+	  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	

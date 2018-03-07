@@ -1,0 +1,8 @@
+wx_yzzpat.web.ip=127.0.0.1
+wx_yzzpat.web.host=http://4f9acc38.ngrok.io/wx_yzzpat/
+#wx_yzzpat.web.host=http://127.0.0.1:8080/wx_yzzpat/
+wx_yzzpat.info.logpath=d:/wx_yzzpat_info.log
+wx_yzzpat.images.url=http://test.holier.cn:8087/
+wx.appid=wx6a40a984ae7206bb
+wx.secret=43fd06403c05f6d16ecfecf49f5d1c4d
+wx.token=nohup

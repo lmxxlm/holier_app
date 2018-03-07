@@ -1,0 +1,128 @@
+@charset "utf-8";
+/* CSS Document */
+body{Font-size=62.5%;}
+body,ul,li,p,div,span,a{padding:0; margin:0;}
+.main{
+    margin: 0 auto;
+	display:block;/*必须是block，不能是inline-block(否则不会居中显示)*/
+	width:100%;
+	
+}
+.hover{background:#C0C7C8;}
+a{text-decoration:none;color:#1E1E1E;}
+/*头部搜索*/
+.main .search{
+	
+	width:100%;
+	position:fixed;
+    top:0px;
+    z-index:1000;
+	
+	text-align:center;
+	background:#EEF1F3;
+	padding:0.5em 0;
+	}
+.main .search input{
+	margin:0.2em 5%;
+	background:red;
+	width:92%;
+	border-radius:0.2em;
+	border:none;
+	background:#FFF;
+	padding:0.4em 0;
+	text-align:center;
+	}
+/*list菜单*/	
+.main .list{
+	color:#686762;
+	width:100%;
+	background:#FFFFFF;
+	margin-top:4em;
+	
+	}
+.main .list ul{
+	width:100%;
+	
+	list-style-type:none;
+	background:#FFF;
+	}
+.main .list ul a{width:100%;display:inline-block;}	
+.main .list ul li{
+	   margin:0 2%;
+		width:96%;
+	   border-bottom:1px solid #E9E9E9; 
+	   padding:1em 0;
+	   white-space:nowrap;
+	  
+	}
+/*如果元素里面没有值，加不了背景图片*/
+	
+.main .list ul li span{
+	display:inline-block;
+	width:90%;
+	margin-left:10%;
+	background:url("../../image/productAdmin/原图/箭头.png") right center no-repeat;
+	background-size:3%;
+	
+	}
+
+.main .list ul .icon1{
+	background:url("../../image/productAdmin/原图/收藏.png") left center no-repeat;
+	background-size:8%;	    
+	}
+	
+.main .list ul .icon2{
+	background:url("../../image/productAdmin/原图/妇科.png") left center no-repeat;
+	background-size:6%;	    
+	}
+.main .list ul .icon3{
+	background:url("../../image/productAdmin/原图/妇科.png") left center no-repeat;
+	background-size:6%;	    
+	
+	}
+.main .list ul .icon4{
+	background:url("../../image/productAdmin/原图/妇产科.png") left center no-repeat;
+background-size:6%;	    
+	
+	}
+.main .list ul .icon5{
+	background:url("../../image/productAdmin/原图/骨科.png") left center no-repeat;
+	background-size:6%;  
+	}
+.main .list ul .icon6{
+	background:url("../../image/productAdmin/原图/产后康复中心.png") left center no-repeat;
+	background-size:6%;	    
+	}	
+.main .list ul .icon7{
+	background:url("../../image/productAdmin/原图/超声科.png") left center no-repeat;
+	background-size:6%;
+	}
+.main .list ul .icon8{
+	background:url("../../image/productAdmin/原图/传染科.png") left center no-repeat;
+	background-size:6%;		    
+	}	
+.main .list ul .icon9{
+	background:url("../../image/productAdmin/原图/儿科.png") left center no-repeat;
+	background-size:6%;	 
+	}		
+.main .list ul .icon10{
+	background:url("../../image/productAdmin/原图/耳鼻咽喉科.png") left center no-repeat;
+	background-size:6%;	    
+	}		
+.main .list ul .icon11{
+	background:url("../../image/productAdmin/原图/肛肠科.png") left center no-repeat;
+	background-size:contain;	    
+	}	
+.main .list ul .icon12{
+	background:url("../../image/productAdmin/原图/呼吸内科.png") left center no-repeat;
+	background-size:contain;	    
+	}		
+.main .list ul .icon13{
+	background:url("../../image/productAdmin/原图/急诊.png") left center no-repeat;
+	background-size:contain;	    
+	}		
+.main .list ul .icon14{
+	background:url("../../image/productAdmin/原图/口腔科 牙科.png") left center no-repeat;
+	background-size:contain;	    
+	}			
+

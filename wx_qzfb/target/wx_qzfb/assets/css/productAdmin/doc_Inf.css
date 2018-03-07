@@ -1,0 +1,135 @@
+@charset "utf-8";
+/* CSS Document */
+li,ul,a,div,p{margin:0; padding:0; display:inlie-block;}
+body{
+	background:#F3F3F3;
+	}
+.main{
+	display:block;
+	margin:0 auto;
+	width:30%;
+	background:#FEFEFE;
+	font-size:1em;
+	
+	}
+.main section{
+	width:90%;
+	margin:0 5%;
+	padding:3% 0;
+	
+	}
+.main .part{
+	width:100%;
+	
+	/*overflow:scroll;加他 做缩小浏览器的时候  文字/元素不会溢出*/
+	white-space:nowrap;/*不换行*/
+	}
+.main .part1,.part2{
+	display:inline-block;
+	vertical-align: middle;/*设置一下垂直居中*/
+	
+	}
+/*头像部分*/
+.main .part1{
+	width:25%;
+	border:1px solid #E5E5E5;
+	text-align:center;
+	border-radius:50%;
+	}
+.main .part1 img{border-radius:50%;}
+	/*头像后面的内容*/
+.main .part2{
+	width:67%;
+	margin-left:3%;
+	line-height:3em;
+	vertical-align: middle;/*设置一下垂直居中*/
+	}
+/*内容的第一行*/	
+.main .part2 .p1{
+	width:100%;
+	}
+.main .part2 .p1 .span1{
+	font-size:0.9em;
+	color:#4C0045;
+	font-weight:bold;
+	width:50%;
+	display:inline-block;
+	}
+.main .part2 .p1 .span2{
+	font-size:0.7em;
+	color:#707070;
+	
+	width:25%;
+	display:inline-block;
+	}
+.main .part2 .p1 button{
+	width:25%;
+	font-size:0.6em;
+	display:inline-block;
+    border-radius:0.7em;
+	border:1px solid #A1A1A1;
+	text-align:center;
+	padding:2% 5%;
+	}
+/*内容的第二行*/
+.main .part2 .p2{
+	 color:#474747;
+	 font-size:0.9em;
+	 
+	}
+.main .part2 .p2 a{color:#06C;}
+
+/*文字内容部分*/
+.main .content2{
+	width:100%;
+	display:inline-block;
+	font-size:0.9em;
+	color:#636363;
+	font-family:"Times New Roman", Times, serif;
+	margin-top:3%;
+	
+	}
+.main .content2 p{
+	text-indent:2em;
+	display:inline-block;
+	line-height:2em;
+	
+	}
+.main .content2 p a{/*给了具体的宽度和高度就能设置背景图片了*/
+	background:url("../../image/productAdmin/doc/drop.png") right center no-repeat;
+	background-size:contain;
+	text-decoration:none;
+	display:inline-block;
+	width:20px;
+	height:1em;
+			
+	}
+	
+.main .list{
+	width:100%;
+	margin-top:3%;
+	}
+.main .list ul{
+	list-style-type:none;
+	
+	}
+.main .list ul li{
+	padding:3% 0;
+	width:100%;
+	background:url("../../image/productAdmin/doc/时间.png") left center no-repeat;
+	background-size:contain;
+	}
+.main .list ul li a{
+	
+	width:100%;
+	white-space:nowrap;
+	
+	
+	}
+
+.main .list ul li span{
+	margin-left:10%;
+	width:90%;
+	background:url("../../image/productAdmin/doc/a.png") right center no-repeat;
+	background-size:contain;
+	display:inline-block; color:#1E1E1E; font-size:0.9em;letter-spacing:0.2em;}

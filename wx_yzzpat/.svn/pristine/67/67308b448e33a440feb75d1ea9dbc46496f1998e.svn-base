@@ -1,0 +1,77 @@
+package com.danrong.wx.yzzpat.module;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.danrong.medex.module.v2.kfhospital.V2KfHospitalModule;
+import com.danrong.medex.module.v2.kfhospital.V2KfHospitalModuleImpl;
+import com.danrong.medex.util.v2.HospitalSearchQuery;
+import com.danrong.medex.util.v2.map.Coordinate;
+import com.danrong.medex.util.v2.map.Location;
+
+public class KfHospitalMapModuleImpl implements KfHospitalMapModule {
+
+  private V2KfHospitalModule v2KfHospitalModule;
+  private int max_count = 10000;
+
+  public KfHospitalMapModuleImpl() {
+    this.v2KfHospitalModule = new V2KfHospitalModuleImpl();
+  }
+
+  @Override
+  public Map<String, Object> getPointsByProvince(String province) {
+    Map<String, Object> data = new HashMap<>();
+
+    HospitalSearchQuery query = new HospitalSearchQuery();
+    query.setProvince(province);
+    query.setCp(1);
+    query.setPs(max_count);
+
+    List<Map<String, Object>> list = this.v2KfHospitalModule.getKfHospitals(query);
+
+    Map<String, Integer> subdata = new HashMap<>();
+
+    for (Map<String, Object> map : list) {
+      String city = map.get("city").toString();
+      if (subdata.get(city) == null) {
+        subdata.put(city, 1);
+      } else {
+        subdata.put(city, subdata.get(city) + 1);
+      }
+    }
+
+    data.put("count", list.size());
+    data.put("flag", "province");
+    data.put("name", province);
+
+    List<Map<String, Object>> children = new ArrayList<>(subdata.size());
+    for (String cityname : subdata.keySet()) {
+      Map<String, Object> child = new HashMap<>();
+      child.put("name", cityname);
+      child.put("flag", "city");
+      child.put("count", subdata.get(cityname));
+
+      Location lo = Coordinate.addrResolve("", province + cityname);
+      child.put("lng", lo.lng);
+      child.put("lat", lo.lat);
+      children.add(child);
+    }
+    data.put("children", children);
+    return data;
+  }
+
+  @Override
+  public Map<String, Object> getPointsByCity(String city) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public Map<String, Object> getPointsByArea(String area) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+}

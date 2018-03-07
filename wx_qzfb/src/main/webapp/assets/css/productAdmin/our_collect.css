@@ -1,0 +1,83 @@
+@charset "utf-8";
+/* CSS Document */
+body{background:rgba(226,226,226,1);}
+ul,li,p,span,div{margin:0;padding:0;}
+a{text-decoration:none;}
+.main{
+	width:100%;
+	display:block;
+	margin: 0 auto;
+	background:#EEF1F3;
+	padding-bottom:30%;
+	}
+	
+.main .top{
+	width:100%;
+    position:fixed;
+	z-index:1;
+	top:0px;
+	
+   }
+  /*当前就诊人*/
+ .main .top .head{
+	 width:100%;
+	 background:#359DE4;
+	 color:#FFF;
+	 padding:2% 0;
+	 
+	 }
+ .main .top .head span{
+	display:inline-block;
+	 width:92%;
+	 margin:0 4%;
+	 background:url("../../image/productAdmin/mycount/drop.png") right center no-repeat;
+	 background-size:contain;
+	 }
+/*收藏医生*/	 
+ .main .top .num{
+	 width:100%;
+	 background:#EEF1F3;
+	 padding-top:2%;
+	
+	 }
+.main .top .num p{
+	
+	 width:92%;
+	 margin:0 4%;
+	 
+	 color:#9E9A94;
+	 display:inline-block;
+	}
+.main .top .num p a{color:#039;}
+/*列表*/
+ul{list-style-type:none;} 
+
+.main .list ul{
+	padding-top:13%;
+	width:100%;
+	background:#FFFFFF;
+	} 
+.main .list ul a{display:inline-block;width:100%;}
+.main .list ul li{
+	width:94%;
+	margin:0 3%;
+	border-bottom:1px solid #E9E9E9;
+	background:url("../../image/productAdmin/mycount/head.png") left center no-repeat;
+	
+	
+	}
+.main .list ul li span{
+	margin:4% 0;
+	display:inline-block;
+	width:85%;
+	margin-left:15%;
+	background:url("../../image/productAdmin/mycount/right.png") right center no-repeat;
+	background-size:2%;
+	
+	}
+	
+.main .list ul li span .p1{font-size:1em;}
+.main .list ul li span .p2{color:#999999;font-size:0.8em;}
+  
+  
+	

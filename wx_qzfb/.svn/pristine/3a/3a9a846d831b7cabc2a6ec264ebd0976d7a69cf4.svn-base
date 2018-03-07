@@ -1,0 +1,67 @@
+package com.danrong.wx.qzfb.controller;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.danrong.wx.qzfb.module.department.Department;
+import com.danrong.wx.qzfb.module.department.DepartmentModule;
+import com.danrong.wx.qzfb.module.department.DepartmentModuleImpl;
+import com.danrong.wx.qzfb.util.comm.JSTLField;
+import com.danrong.wx.qzfb.util.comm.ViewName;
+import com.danrong.wx.qzfb.util.xml.Config;
+@Controller
+public class ExampleController {
+
+	 @Value("#{properties['wx_qzfb.web.host']}")
+	  public String mainUrl;
+
+	  private DepartmentModule departmentModule = new DepartmentModuleImpl();
+  
+  
+  
+  @RequestMapping(value = "jqueryMobile/jqueryMobile")
+  public ModelAndView jqueryMobile(HttpServletRequest request, HttpServletResponse response) {
+    ModelAndView view = new ModelAndView();
+    view.setViewName("jqueryMobile/jqueryMobile");
+    view.addObject(JSTLField.mainUrl, mainUrl.trim());
+    return view;
+  }
+  
+  
+  @RequestMapping(value = "jqueryMobile/eg1")
+  public ModelAndView eg1(HttpServletRequest request, HttpServletResponse response) {
+    ModelAndView view = new ModelAndView();
+    view.setViewName("jqueryMobile/eg1");
+    view.addObject(JSTLField.mainUrl, mainUrl.trim());
+    return view;
+  }
+  
+  @RequestMapping(value = "eg2")
+  public ModelAndView eg2(HttpServletRequest request, HttpServletResponse response) {
+    ModelAndView view = new ModelAndView();
+    view.setViewName("eg2");
+    view.addObject(JSTLField.mainUrl, mainUrl.trim());
+    return view;
+  }
+
+  
+  @RequestMapping(value = "eg1")
+  public ModelAndView eg12(HttpServletRequest request, HttpServletResponse response) {
+    ModelAndView view = new ModelAndView();
+    view.setViewName("eg1");
+    view.addObject(JSTLField.mainUrl, mainUrl.trim());
+    List<Department> department_list = departmentModule.all(Config.default_userid);
+    view.addObject(JSTLField.data, department_list);
+    return view;
+  }
+  
+  
+  
+}

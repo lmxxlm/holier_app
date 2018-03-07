@@ -1,0 +1,45 @@
+@charset "utf-8";
+/* CSS Document */
+body{background:#EEF1F3;}
+.main{
+	display:block;
+	margin:0 auto;
+	width:30%;
+	padding-top:5%;
+	}
+.main .span{
+	width:100%;
+	text-align:center;
+	font-size:1.3em;
+	color:#F00;
+	}
+.main .p{
+	width:100%;
+	color:#9C9C9C;
+	font-size:1.1em;
+	margin-top:3%;
+	}
+.main .p p{
+	padding:0 3%;
+	text-indent:2em;
+	}
+
+.main .button{
+	width:100%;
+	}	
+.main .button a{
+	margin:0 2%;
+	display:block;
+	border:2px solid #06F;
+	text-align:center;
+	}
+.main .button a button{
+	width:90%;
+	margin:0 2%;
+	background:#06F;
+	border:none;
+	border-radius:0.3em;
+	color:#FFF;
+	padding:2%;
+	font-size:1em;
+	}

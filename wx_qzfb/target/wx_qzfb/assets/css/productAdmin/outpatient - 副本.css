@@ -1,0 +1,263 @@
+body{background:#EEF1F3;font-size:1em;
+font-family:"微软雅黑 Light", "Microsoft JhengHei Light", "Microsoft JhengHei UI Light", "Microsoft YaHei UI", "方正舒体", "方正姚体", "仿宋", "黑体", "华文彩云", "华文仿宋", "华文行楷", "华文琥珀", "华文楷体", "华文隶书", "华文新魏", "楷体";
+}
+
+.head{
+	width:100%;
+	height:2.5em;
+	background:white;
+	
+	letter-spacing:0.1em;
+	position:fixed;
+	top:0px;
+	z-index:1;
+	}
+.head a{
+	margin-left:1em;color:#41b2a6;
+	line-height:2.5em;
+	
+	}
+.head span{
+	margin-left:0.5em;
+	line-height:2.5px;
+	color:#41b2a6;
+	}
+/*内容部分*/
+.content{
+	width:100%;
+	margin-top:3.2em;
+
+	}
+.content section {
+	width:100%;
+	background:#fff;
+	margin-top:0.6em;
+	
+	
+	}
+.content section .doc_info{
+	display:inline-block;
+	margin:0.5em 0;
+	padding-left:7em;
+	
+	/*position:relative;
+	display:-moz-box;
+    display:-webkit-box;
+    display:box;
+	*/
+	}
+.content section .doc_info img{
+	/*
+     -moz-box-flex:1;
+    -webkit-box-flex:1;
+    box-flex:1;
+    margin-left:0.7em;
+    */
+    position:absolute;
+	left:1em;
+	width:5em;
+	}
+.content section .doc_info .info{
+	/*
+	margin-left:0.8em;
+	
+	 -moz-box-flex:1;
+    -webkit-box-flex:1;
+    box-flex:1;
+    */
+	}
+.doc_info{white-space:nowrap;}
+/*.content section .doc_info .info .p1{white-space:nowrap;}*/
+.content section .doc_info .info .p1 .span1{
+	   font-size:1em;
+	   font-family:"黑体";
+	   
+	}
+.content section .doc_info .info .p1 .span2{
+	font-size:0.8em;
+	margin-left:0.6em;
+	color:#666666;
+	letter-spacing:0.1em;
+	}
+
+.content section .doc_info .info .p2 .span1,.span2{
+	color:#999999;
+	}
+.introP{
+	/*数据过长可以换行*/
+	white-space:normal;
+}
+.content section .doc_info .info .p2 a{color:#41b2a6;letter-spacing:0.5em;}
+.content section .doc_info button{color:#41b2a6; border:0.5px solid #41b2a6;
+font-size:0.75em;padding:0.15em 1.1em;display:inlie-block;
+
+margin-right:0.8em;
+
+border-radius:0.3em;
+
+margin-top:1.4em;
+
+float:right;
+
+/*
+position: absolute;
+    right: -2px;
+    */
+}
+.clear{clear:both;}
+
+/*一段文字*/
+.intro{
+	width:100%;
+	border-bottom:0.5px solid #e0e0e0;
+	
+	}
+.intro p{
+	margin:0 1em;padding:0;
+	color:#333333;
+	font-size:0.95em;
+	font-weight:2;
+	}
+.intro a img{
+	width:0.7em;
+	float:right;
+	margin-right:1em;
+	margin-top:-1em;
+	margin-bottom:1em;
+	z-index:100;
+	}
+.list,ul{
+	width:100%
+}
+
+.list ul li:hover{background:#DCDCDC;}
+.list ul li{padding-left:1em;}
+.list ul li a{
+	width:98%;
+	
+	line-height:3em;
+	border-bottom:0.5px solid #e0e0e0;
+	text-decoration:none;
+	display:inline-block;
+	color:#646464;
+	font-size:0.9em;
+	background:url("../../image/productAdmin/outpatient/time.png") no-repeat left center,
+	url("../../image/productAdmin/outpatient/right.png") no-repeat 99% center;
+	background-size:1.4em 1.4em,0.6em 0.8em;
+	}
+.list ul li a span{margin-left:2.5em;
+}
+.list ul li:last-child a {
+	background:url("../../image/productAdmin/outpatient/more.png") no-repeat left center,
+	url("../../image/productAdmin/outpatient/right.png") no-repeat 99% center;
+	background-size:1.4em 1.4em,0.6em 0.8em;
+	color:#41b2a6;
+	border-bottom:none;
+}	
+ul,li{padding:0;margin:0;}
+
+
+
+
+/*弹出模态框*/
+
+#bg,#bg1
+     {
+	 width: 100%;
+	 height: 100%;
+	 opacity:0.8;/*设置背景色透明度,1为完全不透明,IE需要使用filter:alpha(opacity=80);*/
+	 filter:alpha(opacity=80);
+	 display: none;
+	position:fixed;
+	 top:0;
+	 left:0;
+	 z-index:2;
+	background: silver;
+    }
+    
+    
+    
+#modal
+    {
+	display:none;
+	 border:1px solid black;
+	
+	 width:100%;
+	 position:fixed;/*让节点脱离文档流,我的理解就是,从页面上浮出来,不再按照文档其它内容布局*/
+	/* top:24%;/*节点脱离了文档流,如果设置位置需要用top和left,right,bottom定位*/
+	 bottom:0px;
+	  z-index:3;/*个人理解为层级关系,由于这个节点要在顶部显示,所以这个值比其余节点的都大*/
+	 background: white;
+		
+    }
+#modal .intro {height:3em;}
+#modal .intro span{height:3em;line-height:3em;margin-left:1em;}
+
+#modal  button{
+	line-height:3em;
+	border:none;
+	text-align:center;
+	color:#41b2a6;
+	height:3em;
+	width:99%;
+	border-top:1px solid #E6E6E6;
+	background:#fff;
+	
+	}
+
+
+#modal .list ul li:last-child a {
+	background:url("../../image/productAdmin/outpatient/time.png") no-repeat left center,
+	url("../../image/productAdmin/outpatient/right.png") no-repeat 99% center;
+	background-size:1.4em 1.4em,0.6em 0.8em;
+	color:#646464;
+	font-size:0.9em;
+}	
+
+
+
+
+
+
+
+
+
+/*挂号须知*/
+#notes{
+	 display:none;
+	 border:1px solid #C6C6C6;
+	
+	 width:90%;
+	 position:fixed;/*让节点脱离文档流,我的理解就是,从页面上浮出来,不再按照文档其它内容布局*/
+	 top:24%;/*节点脱离了文档流,如果设置位置需要用top和left,right,bottom定位*/
+	 margin:auto 5%;
+	 z-index:1700;/*个人理解为层级关系,由于这个节点要在顶部显示,所以这个值比其余节点的都大*/
+	 background: white;
+	 border-radius:0.5em;
+	 padding-bottom:2em;
+	}
+	
+#notes .register{
+	width:100%;
+	height:3em;
+	text-align:center;
+	display:inline-block;
+	line-height:3em;
+	
+	border-bottom:0.5px solid #E8E8E8;
+	
+	}
+	
+#notes p{
+	margin: 1em;
+	margin-bottom:3em;
+	}
+#notes	a{width:50%; text-align:center; display:inline-block;font-size:0.8em}
+#notes	.cancel{border:0.5px solid #D0D0D0;padding:0.4em 1.5em;border-radius:0.5em;color:#848484;}
+#notes	.confirm{border:0.5px solid #41b2a6;padding:0.4em 1.5em;color:#41b2a6;border-radius:0.5em;}
+
+
+
+
+
+

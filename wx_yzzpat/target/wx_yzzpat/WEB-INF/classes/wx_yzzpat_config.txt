@@ -1,0 +1,7 @@
+{
+      "wx_yzzpat.web.ip":"127.0.0.1",
+      "wx_yzzpat.info.logpath":"d:/wx_yzzpat_info.log",
+      "wx.appid":"wx6a40a984ae7206bb",
+      "wx.secret":"43fd06403c05f6d16ecfecf49f5d1c4d",
+      "wx.token":"nohup" 
+}

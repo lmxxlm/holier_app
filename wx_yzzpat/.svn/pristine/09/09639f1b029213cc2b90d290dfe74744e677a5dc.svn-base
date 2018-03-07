@@ -1,0 +1,960 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=”zh”> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=”zh”> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=”zh”> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang=”zh”> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>病房列表</title>
+        <meta name="description" content="">
+	    
+        <meta content="width=device-width,initial-scale=1,maximum-scale=1.0,user-scalable=0" name="viewport">
+        <meta content="yes" name="apple-mobile-web-app-capable">
+        <meta content="black" name="apple-mobile-web-app-status-bar-style">
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="format-detection" content="email=no" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+        
+       
+       <script src="assets/script/js/jquery.min.js"></script>
+        <script src="assets/script/js/jquery-migrate.min.js"></script>
+       <link rel="stylesheet" href="assets/css/public.css">
+      
+         <link rel="stylesheet" href="assets/css/lCalendar.css">
+       <script src="assets/script/js/lCalendar.min.js"></script>
+        
+      <!--手机移动端web资源的整合  end-->
+        <style>
+           html,body,.main{
+              width:100%;
+              height:100%;
+              font-family:"黑体";
+              background:#f1f1f1;
+              overflow-y:hidden;
+             
+             
+           }
+           
+           .main .all{
+              overflow:scroll;
+              /*height:350px;用js动态控制*/
+           }
+           
+            /*轮播*/
+            #container {/*width:100%;*/  height:130px;  overflow: hidden; position: relative;}
+            #list { 
+             /*width:400%;*/height:130px; position: absolute; z-index: 1;
+             }
+            #list img { float: left;/*width:25%;*/height:130px;}
+            
+            /*mask*/
+            #container .mask{
+                width:100%;
+                
+                position:absolute;
+                background:rgba(0,0,0,0.4);
+                left:0;
+                bottom:0;
+                z-index:10;
+                font-size:17px;
+                height:40px;
+                line-height:40px;
+                color:#fff;
+                
+            }
+            
+            
+            #container .mask .picNum{
+                display:inline-block;
+                height:40px;
+                line-height:40px;
+                margin-left:15px;
+                padding-left:22px;
+                background:url(assets/image/ward_list/cama.png) no-repeat 0 50%;
+                background-size:16px 13px;
+            }
+            
+            #container .mask .bed{float:right;margin-right:15px;}
+            
+            /*医院地址简介*/
+            .info{
+               margin-top:10px;
+               padding-left:11px;
+               background:#fff;
+               font-size:16px;
+            }
+            .info p{
+               height:50px;
+               line-height:50px;
+               padding-left:28px;
+            }
+            .info p.address{
+               background:url(assets/image/ward_list/adress.png) no-repeat 0 55%;
+                 -webkit-background-size:23px 23px; 
+                 background-size:23px 23px;
+            }
+            .info p.hosInfo{
+               position:relative;
+                background:url(assets/image/ward_list/intro.png) no-repeat 0 55%;
+                 -webkit-background-size:23px 23px; 
+                 background-size:23px 23px;
+             
+            }
+            
+            .info p.hosInfo i{
+               position:absolute;
+               display:inline-block;
+               width:9px;
+               height:15px;
+               background:url(assets/image/ward_list/detail_h.png) no-repeat;
+               background-size:cover;
+               right:15px;
+               margin-top:17px;
+            }
+            .info p.hosInfo i:hover{
+               background: url(assets/image/ward_list/detail.png)no-repeat;
+            }
+            .info p.car{
+               background:url(assets/image/ward_list/label.png) no-repeat 0 55%;
+               background-size:23px 23px;
+            }
+            .info p.car span{
+               
+               color:#999999;
+               border:1px solid #999999;
+               border-radius:2px;
+               margin-right:8px;
+               font-size:10px;
+               height:16px;
+            }
+            .info p.car span.first{
+                color:#ffbe28;
+               border:1px solid #ffbe28;
+            }
+            .info hr{
+                
+                margin:0;
+                padding:0;
+               
+                margin-left:30px;
+                border:0;
+                border-bottom:1px solid #e3e3e3;
+                
+            }
+            
+            
+            
+            /*时间*/
+            .time{
+                border-bottom:1px solid #e3e3e3;
+                margin-top:10px;
+                height:54px;
+                background:#fff;
+                position:relative;
+               
+            }
+            
+          
+            
+            .time #check_time{
+               width:100%;
+               display:inline-block;
+               height:100%;
+               border:0;
+                font-size:16px;
+                position:absolute;
+                z-index:100;
+                background:rgba(0,0,0,0);
+                
+              box-sizing:border-box;
+-moz-box-sizing:border-box; /* Firefox */
+-webkit-box-sizing:border-box; /* Safari */
+padding-left:15px;
+            
+            }
+            
+            
+              /*时间按钮*/
+            .time .span2{
+               position:absolute;
+               top:0;
+               right:0;
+               display:inline-block;
+               height:54px;
+               line-height:54px;
+               background:#a5d3a7;
+               color:#fff;
+               font-size:17px;
+               width:104px;
+               text-align:center;
+               z-index:99;
+            }
+            .time .span2 i{
+             display:inline-block;
+             width:8px;
+             height:12px;
+             background: url(assets/image/ward_list/detail.png)no-repeat;
+             background-size:cover;
+	         margin-left:7px;
+            }
+            
+            /*列表*/
+            .roomlist{
+               margin-bottom:10px;
+               background:#fff;
+               position:relative;
+               padding:0 15px 0 99px;
+            }
+            
+            .roomlist img{
+               position:absolute;
+               left:15px;
+               top:50%;
+               margin-top:-25px;
+               width:72px;
+               height:56px;
+            }
+            
+            .roomlist div{
+               height:100%;
+               padding:18px 0;
+            }
+            
+            .roomlist div .p1{
+                font-size:16px;
+                color:#333333;
+                position:relative;
+            }
+            .roomlist div .p1 i{
+	            display:inline-block;
+	            width:9px;
+	            height:15px;
+	            background:url(assets/image/ward_list/detail_h.png) no-repeat ;
+	            background-size:cover;
+	            margin-left:5px;
+	            position:absolute;
+	            top:3px;
+            }
+            
+            .roomlist div .p2{
+               margin-top:10px;
+               font-size:12px;
+               color:#999999;
+               max-width:125px;
+               max-width:39%;
+            }
+            
+            .roomlist div .p2 span{margin-right:7px;}
+            
+            .roomlist .ckPrice{
+               display:inline-block;
+               position:absolute;
+               right:15px;
+               font-size:17px;
+               color:#999999;
+               top:50%;
+               margin-top:-17px;
+               max-width:16%;
+            }
+            
+            
+            
+            
+           /*模态框*/
+           .bg{
+               z-index:999;
+               position:fixed;
+               width:100%;
+               height:100%;
+               left:0;
+               top:0;
+               background:rgba(0,0,0,0.5);
+               display:none;
+               padding:73px 15px;
+               box-sizing:border-box;
+			-moz-box-sizing:border-box; /* Firefox */
+			-webkit-box-sizing:border-box; /* Safari */
+			 overflow:auto;
+           } 
+           
+           /*============================*/
+           
+           .bgInfo{
+               z-index:999;
+               position:fixed;
+               width:100%;
+               height:100%;
+               left:0;
+               bottom:0;
+               padding:15px;
+               background:rgba(0,0,0,0.5);
+               box-sizing:border-box;
+			-moz-box-sizing:border-box; /* Firefox */
+			-webkit-box-sizing:border-box; /* Safari */
+              display:none;
+               overflow:auto;
+           }
+           .bgInfo .modalInfo{
+              background:#fff;
+              position:relative;
+              min-height:300px;
+              padding:15px;
+              color:#333;
+              border-radius:10px;
+              
+           }
+           
+          .bgInfo .modalInfo  i{
+              display:inline-block;
+              width:30px;
+              height:30px;
+              background:url(assets/image/details_ward/closed.jpg) no-repeat;
+              background-size:cover;
+              float:right;
+           }
+           
+           .bgInfo .modalInfo p{
+           margin-top:40px;
+              word-wrap: break-word;
+              font-size:16px;
+           }
+           
+          
+           /*===================================*/
+           .bg .modal{
+               background:#f1f1f1;
+               margin:13px;
+           }
+           .bg .modal .til{
+               background:#a5d3a7;
+               height:43px;
+               line-height:43px;
+               color:#fff;
+               position:relative;
+               padding:0 15px;
+           }
+           
+           .bg .modal .til span{
+               font-size:16px;
+           }
+           
+           .bg .modal .til i{
+              display:inline-block;
+              width:16px;
+              height:16px;
+              background:url(assets/image/details_ward/close.png) no-repeat;
+              background-size:cover;
+              position:absolute;
+              right:15px;
+              top:50%;
+              margin-top:-8px;
+           }
+           
+           
+           
+           
+           
+           /*轮播*/
+           .bg .modal #loop{
+              height:243px;
+              position:relative;
+              overflow:hidden;
+              
+              
+           }
+           
+           .bg .modal #pics{
+              position:absolute;
+              height:243px;
+              
+               z-index: 1;
+           }
+           
+           .bg .modal #pics img{
+           	  height:243px;
+           	  float:left;
+           }
+           
+           .bg .modal #loop span{
+               position:absolute;
+               z-index:9999;
+               display:inline-block;
+               width:40px;
+               height:20px;
+               line-height:20px;
+               text-align:center;
+               background:rgba(0,0,0,0.5);
+               left:50%;
+               bottom:12px;
+               color:#fff;
+               border-radius:10px;
+               font-size:14px;
+           }
+           
+           
+           
+           /*病房设施*/
+           .bg .modal .bedRoom{
+              height:50px;
+              line-height:50px;
+              background:#fff;
+              padding-left:15px;
+              margin-top:12px;
+              border-bottom:1px solid #e3e3e3;
+              font-size:16px;
+           }
+           
+           .bg .modal .floor{
+               background:#fff;
+               padding:17px 15px;
+           }
+           
+           .bg .modal .floor p.p1{
+             font-size:15px;
+             color:#333333;
+             
+           }
+           .bg .modal .floor p.p1 span{
+             border-right:2px solid #999999;
+             padding-right:9px;
+             margin-right:9px;
+           }
+           
+           .bg .modal .floor p.p1 span:last-child{
+              border-right:0px;
+           }
+           
+           .bg .modal .floor p.p2{
+            margin-top:17px;
+            font-size:12px;
+            color:#999999;
+             
+           }
+           
+           .bg .modal .floor p.p2 span{
+              border:1px solid #999999;
+              border-radius:4px;
+              display:inline-block;
+              height:16px;
+              line-height:16px;
+              padding:0 10px;
+              margin-right:8px;
+              margin-bottom: 5px;
+           }
+           
+           /*尾部*/
+           .bg .modal .foot{
+              background:#f1f1f1;
+              height:74px;
+              line-height:74px;
+              color:#999999;
+              padding:0 15px;
+              font-size:18px;
+           }
+           
+           .bg .modal button{
+              height:32px;
+              width:90px;
+              color:#fff;
+              background:#fa9d3b;
+              text-align:center;
+              line-height:32px;
+              border-radius:5px;
+              float:right;
+              border:0;
+              margin-top:21px;
+              font-size:16px;
+           }
+           
+           
+           
+           
+           .no_num{
+              padding:15px;
+              background:#fff;margin-top:15px;
+              color:red;
+           }
+            
+           
+        </style>
+    </head>
+    
+     <body>
+        <div class="main">
+        
+	        <div class="top">
+		            <div id="container">
+		                
+		                <div id="list">
+		                   <c:forEach items="${detail.hospital_pictures}" var="picture">
+		                       <img src="${picture.large}" />
+		                   </c:forEach>
+		                </div>
+		                
+		                <div class="mask">
+		                    <span class="picNum"></span>
+		                    <span class="bed">床位数:${detail.bednumber}</span>
+		                </div>
+		            </div>
+		            
+		            <div class="info">
+		                <p class="address">${detail.address}</p>
+		                <hr>
+		                <p class="hosInfo" >
+		                <c:choose>
+	                        <c:when test="${detail.auth==true}">
+	                        ${detail.v_intro}
+	                        </c:when>
+	                        <c:otherwise>医院简介</c:otherwise>
+                        </c:choose>
+		                    <i></i>
+		                     <input type="hidden" name="data-intro" value="${detail.intro}">
+		                </p>
+		                <hr>
+		                <p class="car">
+		                 <c:forEach items="${detail.tags}" var="tag">
+		                       <span <c:if test="${tag eq '转运车接送'}">class="first"</c:if>>${tag}</span>
+		                   </c:forEach>
+		                </p>
+		            </div> 
+		             
+		            <div class="time">
+		               <span class="span2" id="test">
+		                   	入住时间<i></i>
+		               </span>
+		                <input id="check_time" type="text" readonly="" name="input_date" placeholder="日期选择特效" data-lcalendar="${current_date},2099-0-0" />
+		            </div>
+	        
+	        </div>
+            
+            <div class="all" id="allList">
+                   <c:if test="${nolist==true}">
+                       <p class="no_num">当前没有病房数据<p>
+                      
+                   </c:if>
+                   <c:forEach items="${bed_room_list}" var="bed_room">
+                       <div class="roomlist">
+                            <input type="hidden" name="ward_detail"
+                               data-all='${bed_room}' 
+                               data-bedroomId="${bed_room.bedroom_id}"
+                                data-pss="${detail.pss}"
+		                        data-hospitalId="${detail.hospital_id}"
+                               >
+	                        <c:choose>
+		                        <c:when test="${not empty bed_room.bedroom_image.middle}">
+		                           <img src="${bed_room.bedroom_image.middle}"/>
+		                        </c:when>
+		                        <c:otherwise><img src="assets/image/eg/10.jpg"></c:otherwise>
+                            </c:choose>
+	                       
+			                <div>
+			                    <p class="p1">${bed_room.bedroom_name}<i></i></p>
+			                    <p class="p2 tags">
+			                        <c:forEach items="${bed_room.tags}" var="tag">
+			                           <span>${tag}</span>
+			                        </c:forEach>
+			                    </p>
+			                </div>
+		                
+			                <span class="ckPrice">
+				                     ${bed_room.price}                             
+			                </span>
+		               </div>
+                   </c:forEach>
+            </div>
+            
+        </div>
+        
+        <!-- 医院简介模态框 -->
+        <div class="bgInfo">
+            
+           <div class="modalInfo">
+               <i id="closeInfo"></i>
+              <p></p>
+              
+           </div>
+        </div>
+        
+       <div class="bg" >
+           <div class="modal">
+              <input type="hidden" name="modal_time" 
+                  data-time="" 
+                  data-bedroomId="" 
+                   data-pss="${detail.pss}"
+                   data-hospitalId="${detail.hospital_id}">
+              <div class="til"><span class="bedroom_name">单人间</span><i class="close"></i></div>
+              
+              <div id="loop">
+                <div id="pics" class="bedroom_pictures">
+                       <img src="assets/image/eg/0.jpg" class="img1"/>
+	                   <img src="assets/image/eg/1.jpg" class="img2"/>
+	                   <img src="assets/image/eg/2.jpg" class="img3"/>
+	                   <img src="assets/image/eg/3.jpg" class="img4"/>
+                </div>
+                <div >
+                	<span class="picNum">1/3</span>
+                </div>
+            </div>
+            
+            <div class="bedRoom">
+               病房设施
+            </div>
+            
+            <div class="floor">
+                <p class="p1">
+                  <span class="space">建筑面积30㎡</span>
+                  <span class="bednumber">床位1张</span>
+                  <span class="Floor">楼层5层</span>
+                </p>
+                <p class="p2 tags">
+                  <span>空调</span>
+                  <span>电视</span>
+                  <span>24小时热水</span>
+                  <span>独立卫生间</span>
+                </p>
+                
+               <!--  <p class="p2">
+                  <span>空调</span>
+                  <span>电视</span>
+                  <span>24小时热水</span>
+                  <span>独立卫生间</span>
+                </p> -->
+            </div>
+        
+            <div class="foot">
+               <span class="price">参考价格：￥80人/天</span>
+               <button class="submit">预定</button>
+            </div>
+            
+        
+           </div>
+       </div>
+<script>
+
+    	
+	 
+	 
+	 //显示当前时间
+	 function show(){
+		   var mydate = new Date();
+		   var str = "" + mydate.getFullYear() + "-";
+		   str += (mydate.getMonth()+1) + "-";
+		   str += mydate.getDate();
+		   return str;
+	 }
+ 
+	 
+ 
+ 
+	$(function(){
+		 var calendar = new lCalendar();
+    	 calendar.init({
+    	     'trigger': '#check_time',
+    	     'type': 'date'
+    	 });
+		/*
+		//移动页面滚动后不触发touchend、
+  		//解决方法是在滚动时就给停止touchend事件冒泡，实现如下：
+  		stopTouchendPropagationAfterScroll();
+  		function stopTouchendPropagationAfterScroll(){
+  		    var locked = false;
+  		    window.addEventListener('touchmove', function(ev){
+  		        locked || (locked = true, window.addEventListener('touchend', stopTouchendPropagation, true));
+  		    }, true);
+  		    function stopTouchendPropagation(ev){
+  		        ev.stopPropagation();
+  		        window.removeEventListener('touchend', stopTouchendPropagation, true);
+  		        locked = false;
+  		    }
+  		}
+  		
+  		*/
+    	  
+		
+		//医院简介
+		$('p.hosInfo').on('touchend',function(){
+			var content=$(this).find('input[name="data-intro"]').val();
+			if(content == null || content.length == 0){
+				$('.bgInfo').find('p').html("该医院简介还未完善");
+			}else{
+				$('.bgInfo').find('p').html(content);
+			}
+			$('.bgInfo').slideDown();
+			
+			
+		});
+		
+		$('#closeInfo').on('touchend',function(){
+			$('.bgInfo').slideUp();
+		});
+		
+		//预定
+		$('.bg .submit').live('touchend',function(){
+			//医院id  病房id  pss
+			var obj=$('.bg .modal').find('input[name="modal_time"]');
+			var orderDate=obj.attr('data-time');
+			var bedroom_id=obj.attr('data-bedroomId');
+			var hospital_id=obj.attr('data-hospitalId');
+			var pss=obj.attr('data-pss');
+            window.location.href="order_sickroom.html?date="+orderDate+"&&bedroom_id="+bedroom_id+"&&hospital_id="+hospital_id+"&&pss="+pss;
+		});
+		
+		//初始化当前时间
+	   $('#check_time').val(show());
+	    //返回id
+	    var getId=function(id){
+	      	return document.getElementById(id);
+	      }
+	      
+	      //详情里的图片
+	      var loop1=getId('loop');
+	      var pics1=getId('pics');
+	      var imgs1=pics1.getElementsByTagName('img');
+	      var pic_span_node1 = $(loop1).find("span.picNum");
+	      //setImg(loop1,imgs1,pics1,pic_span_node1);
+	      
+	      //主页的图片
+	      var loop2=getId('container');
+	      var pics2=getId('list');
+	      var imgs2=pics2.getElementsByTagName('img');
+	      var pic_span_node2 = $(loop2).find("span.picNum");
+	      setImg(loop2,imgs2,pics2,pic_span_node2);
+	      
+	    function modalInit(){
+	    	$('.bg .modal').find('.bedroom_name').html('');
+	  		$('.bg .modal').find('.space').html('');
+	  		$('.bg .modal').find('.bednumber').html('');
+	  		$('.bg .modal').find('.Floor').html('');
+	  		$('.bg').find('.tags').html('');
+	  		$('.bg').find('.price').html('');
+	  		$('.bg').find('.bedroom_pictures').html('');
+	    }
+	      
+	    //弹出模态框
+	  	$('.all .roomlist').on('click',function(){
+            
+	  		modalInit();
+	  		//把时间赋值到模态框里
+	  		var check_time=$('#check_time').val();
+	  		$('.bg .modal').find('input[name="modal_time"]').attr('data-time',check_time);
+	  		var obj=$(this).find('input[name="ward_detail"]');
+	  		
+	  		//把列表的bedroomid复制给模态框
+	  		var bedroom_id=obj.attr('data-bedroomId');
+	  		$('.bg .modal').find('input[name="modal_time"]').attr('data-bedroomId',bedroom_id);
+	  		
+	  		var result=obj.attr('data-all');
+	  		result=$.parseJSON(result);
+	  		console.log(result);
+	  		$('.bg .modal').find('.bedroom_name').html(result.bedroom_name);
+	  		$('.bg .modal').find('.space').html('建筑面积'+result.space+'㎡');
+	  		$('.bg .modal').find('.bednumber').html('床位'+result.bednumber+'张');
+	  		$('.bg .modal').find('.Floor').html('楼层'+result.floor+'层');
+	  		var tags='';
+	  		for(var i=0;i<result.tags.length;i++){
+	  			tags+='<span>'+result.tags[i]+'</span>';
+	  		}
+	  		$('.bg').find('.tags').html(tags);
+	  		$('.bg').find('.price').html(result.price);
+	  		//渲染图片
+	  		var imgs='';
+	  		for(var j=0;j<result.bedroom_pictures.length;j++){
+	  			imgs+='<img src="'+result.bedroom_pictures[j].large+'" />';
+	  		}
+	  		$('.bg').find('.bedroom_pictures').html(imgs);
+	  		
+	  		
+	      	$('.bg').fadeIn("slow");
+	      	setImg(loop1,imgs1,pics1,pic_span_node1);
+	      });
+	      
+	      
+	      //关掉模态框
+	      $('.bg .close').on('touchend',function(){
+	      	$('.bg').fadeOut("slow");
+	      	
+	      });
+	      
+	   
+	      
+	      
+	      //给图片宽度进行赋值
+	     function setImg(loop,imgs,pics,pic_span_node){
+	  	   var sum=0;
+	         for(var i=0;i<imgs.length;i++){
+	         	imgs[i].style.width=loop.offsetWidth+'px';
+	         	sum +=loop.offsetWidth;
+	         	
+	          }
+	         pics.style.width=sum+'px';
+	         if(pic_span_node){
+	      		pic_span_node.html("1/"+imgs.length);
+	         }
+	     }
+	      
+	     //设置列表的局部滚动
+	    var allList=getId('allList');
+	    allList.style.height=document.body.offsetHeight-allList.offsetTop+'px';
+	    //var myScroll = new IScroll('#allList', {mouseWheel:true,click:true});
+	      
+	      getTouch(pics2,pic_span_node2);
+	      getTouch(pics1,pic_span_node1);
+	    
+	      //传span图像数字对象，图片的长度
+	      function getTouch(mybody,numObj){
+	      	
+	      	var imgs=mybody.getElementsByTagName('img');
+	          //返回角度
+	
+	           function GetSlideAngle(dx,dy) {
+	
+	             return Math.atan2(dy,dx) * 180 / Math.PI;
+	
+	           }
+	
+	   
+	
+	          //根据起点和终点返回方向 1：向上，2：向下，3：向左，4：向右,0：未滑动
+	
+	          function GetSlideDirection(startX,startY, endX, endY) {
+	
+	            var dy = startY - endY;
+	
+	            var dx = endX - startX;
+	
+	            var result = 0;
+	
+	   
+	
+	            //如果滑动距离太短
+	
+	            if (Math.abs(dx) < 2 && Math.abs(dy) < 2) {
+	
+	               return result;
+	
+	            }
+	
+	            var angle = GetSlideAngle(dx, dy);
+	
+	            if (angle >= -45 && angle < 45) {
+	
+	               result = 4;
+	
+	            }else if (angle >= 45 && angle < 135) {
+	
+	               result = 1;
+	
+	            }else if (angle >= -135 && angle < -45) {
+	
+	               result = 2;
+	
+	            }else if ((angle >= 135 && angle <= 180) || (angle >= -180 && angle < -135)) {
+	
+	               result = 3;
+	
+	            }
+	
+	            return result;
+	
+	          }
+	
+	   
+	
+	   
+	        
+	          //滑动处理
+	
+	          var startX, startY;
+	
+	          mybody.addEventListener('touchstart', function (ev){
+	
+	            ev.preventDefault();
+	
+	            startX = ev.touches[0].pageX;
+	
+	            startY = ev.touches[0].pageY; 
+	
+	          }, false);
+	
+	   
+	          var leftX;
+	          var leftPic;
+	          mybody.addEventListener('touchmove', function (ev){
+	
+	            var endX, endY;
+	
+	            ev.preventDefault();
+	
+	            endX = ev.changedTouches[0].pageX;
+	
+	            endY = ev.changedTouches[0].pageY;
+	
+	   
+	
+	          var direction = GetSlideDirection(startX, startY, endX, endY);
+	          switch (direction){
+	            case 3:
+	          	//向左
+	               leftX=mybody.offsetLeft-mybody.getElementsByTagName('img')[0].offsetWidth;
+	               if(leftX == -mybody.offsetWidth){
+	        	    	leftX=0;
+	               }	
+	               
+	               
+	               
+	               //获取到当前的图片index
+	               var index=Math.abs(leftX/mybody.getElementsByTagName('img')[0].offsetWidth)+1;
+	               
+	               numObj.html(index+"/"+imgs.length);
+	              break;
+	
+	            case 4:
+	          	    //向右
+	          	    if(mybody.offsetLeft >= 0){
+	          	    	leftX=-mybody.offsetWidth+mybody.getElementsByTagName('img')[0].offsetWidth;
+	                  }else{
+	                  	leftX = mybody.offsetLeft + mybody.getElementsByTagName('img')[0].offsetWidth;
+	                  }
+	          	    
+	          	    
+	          	    //获取到当前的图片index
+	                  var index=-leftX/mybody.getElementsByTagName('img')[0].offsetWidth+1;
+	                  
+	                  numObj.html(index+"/"+imgs.length);
+	          	    
+	          
+	              break;
+	
+	            default:          
+	
+	          } 
+	
+	        }, false);
+	          
+	          
+	         mybody.addEventListener('touchend', function (ev){
+	      	   mybody.style.left=leftX+'px';
+	         });
+	         
+	      	
+	      }
+	         
+	    
+	    
+	    
+	 
+	});
+ 
+
+       
+</script>
+</body>
+</html>

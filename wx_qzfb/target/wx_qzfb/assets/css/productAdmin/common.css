@@ -1,0 +1,103 @@
+@charset "utf-8";
+/* CSS Document */
+
+
+#login{
+	width:100%;
+	}
+header{
+	
+	width:100%;
+	padding:5%;
+	/*padding:2em;*/
+	background:#063;
+	}
+header #img{
+	
+	margin-left:15%;
+	}
+header span{
+	margin-left:10%;
+	font-size:1.5em;
+	color:white;
+	}
+header #img img{
+	
+	width:5%;
+	height:5%;
+}
+#contentTop{
+	width:30%;
+	}
+section{
+	width:80%;
+	text-align:center;
+	}
+input,button{
+	outline:none;
+	margin-top:8%;
+	border:0 none ;
+	width:100%;
+	padding:5% 0;
+	text-align:center;
+	background:#CCC;
+	border-radius:40px;
+	font-size:1.2em;
+	font-family:"微软雅黑 Light";
+	}
+input::-moz-placeholder {
+    color:black;
+    opacity: 1;
+}
+input::-webkit-input-placeholder {
+    color:black;
+    opacity: 1;/*不透明度 默认值  1*/
+}
+input:-ms-input-placeholder{
+    color:black;
+    opacity: 1;/*不透明度 默认值  1*/
+}
+
+.form-group1 input{
+	width:55%;
+	float:left;
+	margin-right:8%;
+
+	}
+.form-group2 button{
+	float:left;
+	width:35%;
+	
+	}
+.clear{
+	clear:both;
+	}
+
+button{
+	background:#096;
+}
+ button a{
+	text-decoration:none;
+	color:#FFF;
+	}
+
+
+footer{
+	width:80%;
+	padding:10% 0;
+	text-align:center;
+	}
+
+footer span{
+	width:100%;
+	font-size:1.3em;
+	
+	}
+footer span a{ 
+	color:#000;
+	}
+footer span a:hover{
+	color:#060;
+	text-decoration:none;
+	}
+

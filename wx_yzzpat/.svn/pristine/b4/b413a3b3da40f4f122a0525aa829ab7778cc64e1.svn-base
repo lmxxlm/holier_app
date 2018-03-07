@@ -1,0 +1,139 @@
+package com.danrong.wx.yzzpat.module;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.danrong.medex.bean.Account;
+import com.danrong.medex.bean.Patient;
+import com.danrong.medex.configure.MedexConfigure;
+import com.danrong.medex.configure.TableFieldName;
+import com.danrong.medex.module.AccountModule;
+import com.danrong.medex.module.AccountModuleImpl;
+import com.danrong.medex.module.PatientModule;
+import com.danrong.medex.module.PatientModuleImpl;
+import com.danrong.medex.module.SendMessageCallBackImpl;
+import com.danrong.medex.module.SendMessageImpl;
+import com.danrong.medex.module.v2.kfhospital.V2KfBedroomModule;
+import com.danrong.medex.module.v2.kfhospital.V2KfBedroomModuleImpl;
+import com.danrong.medex.module.v2.kfhospital.V2KfHospitalModule;
+import com.danrong.medex.module.v2.kfhospital.V2KfHospitalModuleImpl;
+import com.danrong.medex.module.v2.order.V2KfOrderModule;
+import com.danrong.medex.module.v2.order.V2KfOrderModuleImpl;
+import com.danrong.medex.util.MedexLog;
+import com.danrong.medex.util.MedexLogImpl;
+import com.danrong.medex.util.MessageUtil;
+import com.danrong.medex.util.v2.KfOrderSearchQuery;
+import com.danrong.medex.util.v2.KfOrderStatus;
+import com.danrong.medex.util.v2.V2PhoneMessageTemplate;
+import com.dr.core.util.TimeUtil;
+
+public class KfOrderModuleImpl implements KfOrderModule {
+
+  private final V2KfOrderModule v2KfOrderModule;
+  private final V2KfHospitalModule v2KfHospitalModule;
+  private final V2KfBedroomModule v2KfBedroomModule;
+  private final PatientModule patientModule;
+  private final AccountModule accountModule;
+  private final MedexLog alog;
+  private final TimeUtil timeUtil;
+
+  public KfOrderModuleImpl() {
+    // 初始化
+    this.v2KfHospitalModule = new V2KfHospitalModuleImpl();
+    this.v2KfBedroomModule = new V2KfBedroomModuleImpl();
+    this.v2KfOrderModule = new V2KfOrderModuleImpl();
+    this.alog = MedexLogImpl.getInstance();
+    this.timeUtil = new TimeUtil();
+    this.patientModule = new PatientModuleImpl();
+    this.accountModule = new AccountModuleImpl();
+  }
+
+  @Override
+  public int submitOrder(Map<String, Object> order) {
+    Map<String, Object> logData = new HashMap<>();
+
+    // 判断患者有没有未处理的订单(待转院确认)
+    Object patient_phone = order.get("patient_phone");
+    if (patient_phone == null) {
+      return 406;
+    } else {
+      KfOrderSearchQuery query = new KfOrderSearchQuery();
+      query.setPatient_id(patient_phone.toString());
+      query.setStatus(KfOrderStatus.during_transfer);
+
+      List<Map<String, Object>> orders = v2KfOrderModule.getOrderList(query);
+      boolean hasUnPayedOrder = true;
+      if (orders == null || orders.isEmpty()) hasUnPayedOrder = false;
+      if (hasUnPayedOrder) {
+        return 403;
+      } else {
+        if (order.get("hospital_id") == null || order.get("bedroom_id") == null || order.get("patient_name") == null
+            || order.get("check_in_time") == null || order.get("transfer_time") == null) {
+          return 406;
+        } else {
+          // 判断医院和病房是否存在
+          String hospital_id = order.get("hospital_id").toString();
+          String bedroom_id = order.get("bedroom_id").toString();
+
+          boolean hospital_exist = v2KfHospitalModule.exist(hospital_id);
+          boolean bedroom_exist = v2KfBedroomModule.exist(bedroom_id);
+
+          if (!hospital_exist || !bedroom_exist) {
+            return 405;
+          } else {
+            Map<String, Object> kfhospital = v2KfHospitalModule.findByHospitalId(hospital_id);
+            Map<String, Object> kfbedroom = v2KfBedroomModule.getKfBedroomDetail(bedroom_id);
+
+            // 获取数据
+            order.put("hospital_name", kfhospital.get("name"));
+            order.put("reward", kfhospital.get("reward"));
+            order.put("bedroom_name", kfbedroom.get("name"));
+
+            String data = v2KfOrderModule.submitOrder(order);
+            if (StringUtils.isNotBlank(data)) {
+              // 判断患者是否存在，否则注册患者
+              Account patient_account = accountModule.findAccountByAccountIdAndType(
+                  (String) order.get("patient_phone"), MedexConfigure.destPatientType);
+              if (patient_account == null) {
+                patientModule.addPatient(
+                    new Patient((String) order.get("patient_phone"), (String) order.get("patient_name")), false);
+              }
+              // 给OP发短信
+              sendMessageToOp(data);
+              // 给患者发短信
+              String phone_message_to_patient = V2PhoneMessageTemplate.template.get("v2_19");
+
+              List<String> values = new ArrayList<>();
+
+              values.add((String) kfhospital.get("name"));
+              phone_message_to_patient = MessageUtil.replace(phone_message_to_patient, values);
+              new Thread(new SendMessageImpl((String) order.get("patient_phone"), phone_message_to_patient,
+                  new SendMessageCallBackImpl())).start();
+
+              // 记录日志
+              logData.put("type", "patient submit transfer order");
+              logData.put(TableFieldName.userid, (String) order.get("patient_phone"));
+              logData.put(TableFieldName.visitTime, timeUtil.now2l());
+              alog.info(logData);
+
+              return 0;
+            } else {
+              return 401;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  private void sendMessageToOp(String orderId) {
+    String message = "您有新的康复转院订单：" + orderId;
+    for (String telephone : com.danrong.medex.module.OrderModuleImpl.op_tel_map.keySet()) {
+      new Thread(new SendMessageImpl(telephone, message, new SendMessageCallBackImpl())).start();
+    }
+  }
+}

@@ -1,0 +1,197 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=”zh”> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=”zh”> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=”zh”> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang=”zh”> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>我的转院订单</title>
+        <meta name="description" content="">
+	    
+        <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport">
+        <meta content="yes" name="apple-mobile-web-app-capable">
+        <meta content="black" name="apple-mobile-web-app-status-bar-style">
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="format-detection" content="email=no" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+        
+         <script src="assets/script/js/jquery.min.js"></script>
+        <script src="assets/script/js/jquery-migrate.min.js"></script>
+       <link rel="stylesheet" href="assets/css/public.css">
+       
+        <script src="assets/script/js/dropload.min.js"></script>
+       <link rel="stylesheet" href="assets/css/dropload.css">
+        
+      <!--手机移动端web资源的整合  end-->
+        <style>
+        
+           /*做到了一半*/
+      
+           html,body,.main{
+              width:100%;
+              height:100%;
+              font-family:"黑体";
+              background:#f1f1f1;
+           }
+           
+           /*tab*/
+           .main p.tab{
+             height:50px;
+             line-height:50px;
+             text-align:center;
+             background:#a5d3a7;
+             position:fixed;
+             top:0;
+             left:0;
+             width:100%;
+           }
+           .main p.tab span{
+               display:inline-block;
+               width:70px;
+               height:30px;
+               line-height:30px;
+               text-align:center;
+               font-size:15px;
+                border:1px solid #fff;
+                color:#fff;
+           }
+           
+           .main p.tab span.active{
+               background:#fff;
+               color:#a5d3a7;
+              
+           }
+           
+           .main p.tab span:first-child{
+              border-radius:6px 0 0 6px;
+           }
+           .main p.tab span:last-child{
+              border-radius:0 6px 6px 0;
+           }
+           
+           .main .order{
+              margin-bottom:15px;
+              background:#fff;
+               font-size:14px;
+           }
+           
+           .main .order p.apply,.main .order p.order_time{
+               padding:0px 15px;
+               height:43px;
+               line-height:43px;
+               color:#333;
+              
+           }
+           
+           .main .order p.apply span:last-child{
+              float:right;
+              color:#a5d3a7;
+           }
+           
+           .main .order p.info{
+              padding:15px;
+              color:#999999;
+              border-top:1px solid #e3e3e3;
+              border-bottom:1px solid #e3e3e3;
+           }
+           .main .order p.info span{
+              display:block;
+           }
+        </style>
+    </head>
+    
+     <body>
+        <div class="main">
+          <!--   <p class="tab"><span class="active">进行中</span><span>已完成</span></p> -->
+          
+          <c:forEach items="${data}" var="order">
+              <div class="order" data-id="${order.orderid}">
+                <p class="apply"><span>${order.patient_name}提交了转院申请</span><span>${order.status}</span></p>
+                <p class="info">
+                   <span>康复医院：${order.hospital_name}</span>
+                   <span>病房：${order.bedroom_name}</span>
+                   <span>入住时间：${order.check_in_time}</span>
+                   <span>订单号：${order.orderid}</span>
+                </p>
+                <p class="order_time">下单时间:入住时间：${order.create_time}</p>
+              </div>
+          </c:forEach>
+          
+        </div>     
+        <script>
+           $(function(){
+        	   $('.order').live('click touchend',function(event){
+        		    var order_id=$(this).attr('data-id');
+        		    window.location.href="trans_order_detail.html?order_id="+order_id;
+        		    event.preventDefault();
+        	   });
+        	   
+           });
+           
+           
+           //下拉加载页面
+ 		  
+           $(function(){
+       	    var counter = 2;
+       	     $('.main').dropload({
+       	        scrollArea : window,
+       	        loadDownFn : function(me){
+       	            $.ajax({
+       	                type: 'GET',
+       	                async:true,
+       	                url: 'get_more_kf_order.do',
+       	                dataType: 'json',
+       	                data:{
+       	                    cp:counter
+       	                },
+       	                success: function(result){
+       	                	//alert(result.data.length);
+       	                	 if(result.data.length==0){
+   	   	                            // 锁定
+   	   	                            me.lock();
+   	   	                            // 无数据
+   	   	                            me.noData();
+   	   	                           // break;
+   	   	                     }; 
+       	                	
+       	                counter++;
+       	                 var str='';
+       	                 for(var i=0;i<result.data.length;i++){
+       	                	 str+='<div class="order" data-id="">'
+       	                	 +'<p class="apply">'
+       	                	 +'<span>${result.data.patient_name}提交了转院申请</span>'
+       	                	 +'<span>${result.data.status}</span></p>'
+       	                	 +'<p class="info">'
+       	                	 +'<span>康复医院：${result.data.hospital_name}</span>'
+       	                	 +'<span>病房：${result.data.bedroom_name}</span>'
+       	                	 +'<span>入住时间：${result.data.check_in_time}</span>'
+       	                	 +'<span>订单号：${result.data.orderid}</span></p>'
+       	                	 +'<p class="order_time">下单时间:${result.data.create_time}</p></div>';
+       	                 }
+       	                 
+       	                    // 为了测试，延迟1秒加载
+       	                    setTimeout(function(){
+       	                        $('.main').append(str);
+       	                        // 每次数据加载完，必须重置
+       	                        me.resetload();
+       	                    },1000);
+       	                },
+       	                error: function(xhr, type){
+       	                  //  alert('加载错误!');
+       	                	me.resetload();
+       	                }
+       	            });
+       	        }
+       	    });
+           });
+        </script>
+     </body>
+</html>
+

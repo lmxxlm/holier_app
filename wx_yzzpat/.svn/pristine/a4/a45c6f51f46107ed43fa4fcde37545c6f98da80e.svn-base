@@ -1,0 +1,59 @@
+package com.danrong.wx.yzzpat.controller;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.danrong.medex.module.v2.kfhospital.V2KfHospitalModule;
+import com.danrong.medex.module.v2.kfhospital.V2KfHospitalModuleImpl;
+import com.danrong.medex.util.v2.HospitalSearchQuery;
+
+@Controller
+public class TransferController {
+
+  @Value("#{properties['wx_yzzpat.web.host']}")
+  public String mainUrl;
+
+  private final V2KfHospitalModule v2kfHospitalModule = new V2KfHospitalModuleImpl();
+
+  @RequestMapping(value = "turn_hospital")
+  public ModelAndView turn_hospital(HttpServletRequest request, HttpServletResponse response) {
+    ModelAndView view = new ModelAndView();
+    view.setViewName("turn_hospital");
+    view.addObject("mainUrl", mainUrl.trim());
+
+    // 获取医院列表
+    HospitalSearchQuery param = new HospitalSearchQuery();
+    List<Map<String, Object>> datalist = v2kfHospitalModule.getKfHospitals(param);
+
+    List<Map<String, Object>> data = new LinkedList<>();
+    if (datalist != null) {
+      for (Map<String, Object> map : datalist) {
+        Map<String, Object> subdata = new HashMap<>();
+        subdata.put("hospital_id", map.get("record_id"));
+        subdata.put("hospital_name", map.get("name"));
+        subdata.put("hospital_image", map.get("image"));
+        subdata.put("auth", map.get("auth"));
+        subdata.put("district", map.get("district"));
+        subdata.put("pss", map.get("pss"));
+        subdata.put("departments", map.get("departments"));
+        subdata.put("distance", map.get("distance"));
+        data.add(subdata);
+      }
+    }
+
+    if (data.isEmpty()) view.addObject("nolist", true);
+
+    view.addObject("data", data);
+    return view;
+  }
+}

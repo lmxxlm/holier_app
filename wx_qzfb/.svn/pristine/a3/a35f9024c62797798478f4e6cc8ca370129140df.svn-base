@@ -1,0 +1,17 @@
+wx_qzfb.web.ip=peace.holier.cn
+#wx_qzfb.web.ip=backup.holier.cn
+wx_qzfb.web.host=http://peace.holier.cn/wx_qzfb/
+#wx_qzfb.web.host=http://backup.holier.cn/wx_qzfb/
+wx_qzfb.info.logpath=/alidata1/metroCity/work/out/wx_qzfb_info.log
+wx_qzfb.images.url=http://www.holier.cn:8087/
+wx_qzfb.doctor.images.url=http://www.holier.cn:8087/mobileApp/qzfb/doctor/images/
+wx_qzfb.doctor.data.filename=/alidata1/holier/resources/doctorList.xls
+wx.appid=wxe50b90e51b1a54a5
+wx.secret=0fa1f213b0fddc9796d2187f9456dd00
+wx.token=da327df530b3e5fdda0f07e07d210455
+qzfb.db.host=www.holier.cn:27017
+qzfb.db.dbname=qzfb
+qzfb.db.passwd=qzfb
+qzfb.db.username=qzfb
+qzfb.coll.card=card
+qzfb.coll.user=user

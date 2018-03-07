@@ -1,0 +1,301 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+         pageEncoding="UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=”zh”> <![endif]-->
+<!--[if IE 7]> <html class="no-js lt-ie9 lt-ie8" lang=”zh”> <![endif]-->
+<!--[if IE 8]> <html class="no-js lt-ie9" lang=”zh”> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang=”zh”>
+<!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>管理就诊卡</title>
+    <meta name="description" content="">
+    <meta content=”width=device-width; initial-scale=no; maximum-scale=1.0;
+          user-scalable=0;″ name=”viewport”/>
+    <link rel="stylesheet" href="assets/css/productAdmin/normalize.css">
+
+    <!--   <link rel="stylesheet" href="assets/css/productAdmin/main.css"> -->
+    <link href="assets/css/productAdmin/my_info.css" rel="stylesheet">
+
+
+    <link rel="stylesheet"
+          href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+    <script src="assets/script/productAdmin/jquery.min.js"></script>
+    <script src="assets/script/productAdmin/bootstrap.min.js"></script>
+
+    <script src="assets/script/productAdmin/vendor/modernizr-2.6.2.min.js"></script>
+    <!--手机移动端web资源的整合  start
+                 1.强制让文档宽度与设备宽度保持1：1
+                 ，文档中最大宽度比例是1.0，且不润许点击屏幕放大浏览
+                 2.忽略将页面中的数字识别为电话号码
+                 3.忽略Android平台中对邮箱地址的识别
+                 4.当网站添加到主屏幕快速启动方式，可隐藏地址栏，仅针对io
+                 5.将网站添加到主屏幕快速启动方式，仅针对ios的safari顶端状态条的样式s的safari
+            -->
+    <meta
+            content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"
+            name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="format-detection" content="email=no"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+
+
+    <!--手机移动端web资源的整合  end-->
+
+
+</head>
+<body>
+<input type="hidden" value="微信的用户" name="wex_id"/>
+<div class="list">
+    <c:forEach items="${data}" var="card">
+        <a href="detail_info.html?card_id=${card.card_id}" class="detail_info">
+            <input type="hidden" name="card_id" value="${card.card_id}">
+            <div class="img">
+                <c:choose>
+                    <c:when test="${card.hasImage==true}">
+                        <img src=${card.image }/>
+                    </c:when>
+                    <c:otherwise>
+                        <img src="assets/image/productAdmin/my_info/my_Info.png"/>
+                    </c:otherwise>
+                </c:choose>
+            </div>
+            <div class="intro">
+                <p class="p1">
+                    <span class="name">${card.patient_name}</span>
+                    <c:if test="${card.dft==true}">
+                        <span class="status">（默认）</span>
+                    </c:if>
+                </p>
+                <p class="p2">
+                    <c:choose>
+                        <c:when test="${card.c_type == '02'}">
+                            身份证号：
+                        </c:when>
+                        <c:when test="${card.c_type == '04'}">
+                            医保卡号：
+                        </c:when>
+                        <c:otherwise>
+                            卡号：
+                        </c:otherwise>
+                    </c:choose>
+                        ${card.card_no}</p>
+            </div>
+        </a>
+    </c:forEach>
+
+    <%--测试开始--%>
+        <a href="detail_info.html?card_id=${card.card_id}" class="detail_info">
+            <input type="hidden" name="card_id" value="${card.card_id}">
+            <div class="img">
+                <c:choose>
+                    <c:when test="${card.hasImage==true}">
+                        <img src=${card.image }/>
+                    </c:when>
+                    <c:otherwise>
+                        <img src="assets/image/productAdmin/my_info/my_Info.png"/>
+                    </c:otherwise>
+                </c:choose>
+            </div>
+            <div class="intro">
+                <p class="p1">
+                    <span class="name">小丸子</span>
+                    <c:if test="${true==true}">
+                        <span class="status">（默认）</span>
+                    </c:if>
+                </p>
+                <p class="p2">
+                    <c:choose>
+                        <c:when test="${card.c_type == '02'}">
+                            身份证号：
+                        </c:when>
+                        <c:when test="${card.c_type == '04'}">
+                            医保卡号：
+                        </c:when>
+                        <c:otherwise>
+                            卡号：
+                        </c:otherwise>
+                    </c:choose>
+                        1234567890</p>
+            </div>
+        </a>
+    <a href="detail_info.html?card_id=${card.card_id}" class="detail_info">
+        <input type="hidden" name="card_id" value="${card.card_id}">
+        <div class="img">
+            <c:choose>
+                <c:when test="${card.hasImage==true}">
+                    <img src=${card.image }/>
+                </c:when>
+                <c:otherwise>
+                    <img src="assets/image/productAdmin/my_info/my_Info.png"/>
+                </c:otherwise>
+            </c:choose>
+        </div>
+        <div class="intro">
+            <p class="p1">
+                <span class="name">小丸子</span>
+            </p>
+            <p class="p2">
+                        身份证号：
+                1234567890</p>
+        </div>
+    </a>
+    <a href="detail_info.html?card_id=${card.card_id}" class="detail_info">
+        <input type="hidden" name="card_id" value="${card.card_id}">
+        <div class="img">
+            <c:choose>
+                <c:when test="${card.hasImage==true}">
+                    <img src=${card.image }/>
+                </c:when>
+                <c:otherwise>
+                    <img src="assets/image/productAdmin/my_info/my_Info.png"/>
+                </c:otherwise>
+            </c:choose>
+        </div>
+        <div class="intro">
+            <p class="p1">
+                <span class="name">小丸子</span>
+                <c:if test="${true==true}">
+                    <span class="status">（默认）</span>
+                </c:if>
+            </p>
+            <p class="p2">
+                        医保卡号：
+                1234567890</p>
+        </div>
+    </a>
+    <a href="detail_info.html?card_id=${card.card_id}" class="detail_info">
+        <input type="hidden" name="card_id" value="${card.card_id}">
+        <div class="img">
+            <c:choose>
+                <c:when test="${card.hasImage==true}">
+                    <img src=${card.image }/>
+                </c:when>
+                <c:otherwise>
+                    <img src="assets/image/productAdmin/my_info/my_Info.png"/>
+                </c:otherwise>
+            </c:choose>
+        </div>
+        <div class="intro">
+            <p class="p1">
+                <span class="name">小丸子</span>
+                <c:if test="${true==true}">
+                    <span class="status">（默认）</span>
+                </c:if>
+            </p>
+            <p class="p2">
+                <c:choose>
+                    <c:when test="${card.c_type == '02'}">
+                        身份证号：
+                    </c:when>
+                    <c:when test="${card.c_type == '04'}">
+                        医保卡号：
+                    </c:when>
+                    <c:otherwise>
+                        卡号：
+                    </c:otherwise>
+                </c:choose>
+                1234567890</p>
+        </div>
+    </a>
+    <%--测试结束--%>
+</div>
+<%--<c:if test="${noRecord==true}">
+    <div style="height:100px; line-height:100px; text-align:center; background:#fff; border-bottom:1px solid #dedede;">
+        您尚未绑定就诊卡，请点击添加卡号。
+    </div>
+</c:if>--%>
+<div class="button">
+    <button type="button" style="background:#41b2a6; color:#fff;">
+        <span>+</span> 添加卡号
+    </button>
+</div>
+
+</body>
+<script>
+    /*
+         $(function(){
+             //获得患者的卡号列表
+
+             list();
+             function list(){
+                var wx_id= $('input[name="wex_id"]').val();
+                 $.ajax({
+                     url:"myinfo_card_list.do",
+                     dataType:"json",
+                     async:true,//请求是否异步，默认为异步
+                     data:{"wex_id":wex_id},
+                     type:"GET",
+                     beforeSend:function(){
+                         alert("正在加载");
+                     },
+                     success:function(data){
+                         var result=data.result;
+                         var str = '';
+                         $.each(result,function(i,o){
+                             str += '<a class="detail_info" href="detail_info.html?infoId="+o.infoId>'
+                                     +'<input type="hidden" name="telephone" value="'+o.telephone+'">'
+                                     +'<div class="img">'
+                                     +'<img src="assets/image/productAdmin/my_info/my_Info.png"/>'
+                                     +'</div>'
+                                      +'<div class="intro"><p class="p1"><span class="patient_name">o.patient_name</span><span class="status">o.status</span></p><p class="p2 card_no" value='+o.card_no+'>就诊卡号：o.card_no</p></div></a>';
+                         });
+                         $('.list').html(str);
+                     },
+                     complete:function(){
+                         //请求完成
+                     },
+                     error:function(){
+                         //请求出错
+                         alert("出错");
+                     }
+                 });
+             }
+
+         });
+         $('.detail_info').on('click',function(){
+             var card_id=$(this).find('input[name="card_id"]').val();
+             $(this).attr('href','detail_info.html?card_id='+card_id;
+         });
+         */
+    //点击进入详情页面
+
+
+    //添加卡号
+    $('.button button').click(function () {
+        var wex_id = $('input[name="wex_id"]').val();
+        window.location.href = "add_info.html?wex_id=" + wex_id;
+    });
+</script>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

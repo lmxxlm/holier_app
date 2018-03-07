@@ -1,0 +1,304 @@
+package com.danrong.wx.qzfb.controller;
+
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.danrong.wx.qzfb.module.doctor.Doctor;
+import com.danrong.wx.qzfb.module.doctor.DoctorModule;
+import com.danrong.wx.qzfb.module.doctor.DoctorModuleImpl;
+import com.danrong.wx.qzfb.module.log.CancelLog;
+import com.danrong.wx.qzfb.module.log.LogModule;
+import com.danrong.wx.qzfb.module.log.LogModuleImpl;
+import com.danrong.wx.qzfb.module.log.OrderLog;
+import com.danrong.wx.qzfb.module.message.MessageModule;
+import com.danrong.wx.qzfb.module.message.MessageModuleImpl;
+import com.danrong.wx.qzfb.module.myinfo.BindCard;
+import com.danrong.wx.qzfb.module.myinfo.BindCardImpl;
+import com.danrong.wx.qzfb.module.myinfo.Card;
+import com.danrong.wx.qzfb.module.order.HistorySearchQuery;
+import com.danrong.wx.qzfb.module.order.OrderModule;
+import com.danrong.wx.qzfb.module.order.OrderModuleImpl;
+import com.danrong.wx.qzfb.module.order.OrderQuery;
+import com.danrong.wx.qzfb.module.order.OrderResult;
+import com.danrong.wx.qzfb.module.order.SingleHistory;
+import com.danrong.wx.qzfb.module.schedule.Schedule;
+import com.danrong.wx.qzfb.module.schedule.ScheduleModule;
+import com.danrong.wx.qzfb.module.schedule.ScheduleModuleImpl;
+import com.danrong.wx.qzfb.module.schedule.ScheduleSearchQuery;
+import com.danrong.wx.qzfb.util.comm.Help;
+import com.danrong.wx.qzfb.util.comm.JSTLField;
+import com.danrong.wx.qzfb.util.comm.OrderStatus;
+import com.danrong.wx.qzfb.util.comm.SessionUtil;
+import com.danrong.wx.qzfb.util.comm.ViewName;
+import com.danrong.wx.qzfb.util.xml.Config;
+import com.danrong.wx.qzfb.util.xml.TimeSplit;
+import com.danrong.wx.qzfb.util.xml.TimeSplitItem;
+import com.dr.core.util.TimeUtil;
+
+@Controller
+public class OrderController {
+
+  @Value("#{properties['wx_qzfb.web.host']}")
+  public String mainUrl;
+
+  @Value("#{properties['wx_qzfb.doctor.images.mainUrl']}")
+  public String doctorImageUrl;
+
+  private ScheduleModule scheduleModule = new ScheduleModuleImpl();
+  private DoctorModule doctorModule = new DoctorModuleImpl();
+  private OrderModule orderModule = new OrderModuleImpl();
+  private MessageModule messageModule = new MessageModuleImpl();
+  private BindCard bindCard = new BindCardImpl();
+  private SessionUtil sessionUtil = new SessionUtil();
+  private LogModule logModule = new LogModuleImpl();
+  private TimeUtil timeUtil = new TimeUtil();
+
+  @RequestMapping(value = ViewName.order)
+  public ModelAndView order(@ModelAttribute ScheduleSearchQuery query, String scheduleItemCode,
+      HttpServletRequest request, HttpServletResponse response) {
+    ModelAndView view = new ModelAndView();
+    view.setViewName(ViewName.order);
+    view.addObject(JSTLField.mainUrl, mainUrl.trim());
+    // 获取数据
+    if (query != null && !query.isEmpty() && StringUtils.isNotBlank(scheduleItemCode)) {
+      List<Schedule> schedules = scheduleModule.searchSchedules(query);
+      if (schedules != null && !schedules.isEmpty()) {
+        for (Schedule item : schedules) {
+          if (scheduleItemCode.equals(item.getScheduleItemCode())) {
+            List<TimeSplitItem> data = TimeSplit.split(item.getStartTime(), item.getEndTime(), item.getAvailableNum(),
+                scheduleModule.getTimeDByDepartmentCode(item.getDepartmentCode()));
+
+            for (TimeSplitItem tsi : data) {
+              List<String> anArr = tsi.getNumArray();
+              if (anArr != null && anArr.size() > 0) {
+                tsi.setCount(anArr.size());
+                tsi.setNo(anArr.get(0));
+              }
+            }
+            view.addObject(JSTLField.data, data);
+            view.addObject(JSTLField.schedule, item);
+            Doctor doctor = doctorModule.getDoctorDetailById(doctorImageUrl, item.getDoctorCode());
+            view.addObject("doctorImage", doctor.getDoctorImage());
+
+            Card card = bindCard.getDefaultCard(sessionUtil.getUserOpenid(request.getSession()));
+            view.addObject(JSTLField.default_card, card);
+            break;
+          } else continue;
+        }
+      } else {
+        view.addObject(JSTLField.nolist, true);
+      }
+    }
+    return view;
+  }
+
+  @RequestMapping(value = ViewName.orderSubmit)
+  @ResponseBody
+  public boolean orderSubmit(@ModelAttribute OrderQuery query, HttpServletRequest request, HttpServletResponse response) {
+    System.out.println(query.getCardNo());
+    System.out.println(query.getSeqCode());
+    System.out.println(query.getScheduleItemCode());
+
+    OrderResult orderResult = this.orderModule.order(query);
+    System.out.println(orderResult.getOrderCode());
+    System.out.println(orderResult.getOrderContent());
+    System.out.println(orderResult.getRegFee());
+    System.out.println(orderResult.getResultCode());
+    System.out.println(orderResult.getResultContent());
+    System.out.println(orderResult.getSeqCode());
+
+    boolean result = true;
+    if (orderResult == null) result = false;
+    else {
+      // 日志记录
+      logModule.insert(new OrderLog(query, orderResult, timeUtil.now2l()));
+      // 分析结果
+      String resultCode = orderResult.getResultCode();
+      if ("0".equals(resultCode)) {
+        // 推送模板消息
+        Map<String, Object> data = new LinkedHashMap<>();
+        data.put("touser", sessionUtil.getUserOpenid(request.getSession()));
+        data.put("template_id", Config.order_success_template_id);
+        data.put("url", Config.template_url);
+
+        Map<String, Map<String, Object>> dmap = new LinkedHashMap<>();
+
+        Map<String, Object> obj1 = new LinkedHashMap<>();
+        obj1.put("value",
+            "您好，您已预约挂号成功：" + "请在" + request.getParameter("serviceDate") + " " + request.getParameter("picktime")
+                + "前去取号。");
+        obj1.put("color", "#173177");
+        dmap.put("first", obj1);
+
+        Map<String, Object> obj2 = new LinkedHashMap<>();
+        obj2.put("value", request.getParameter("name"));
+        obj2.put("color", "#173177");
+        dmap.put("patientName", obj2);
+
+        Map<String, Object> obj3 = new LinkedHashMap<>();
+        obj3.put("value", "1".equals(request.getParameter("sex")) ? "男" : "女");
+        obj3.put("color", "#173177");
+        dmap.put("patientSex", obj3);
+
+        Map<String, Object> obj4 = new LinkedHashMap<>();
+        obj4.put("value", "衢州妇保医院");
+        obj4.put("color", "#173177");
+        dmap.put("hospitalName", obj4);
+
+        Map<String, Object> obj5 = new LinkedHashMap<>();
+        obj5.put("value", request.getParameter("department"));
+        obj5.put("color", "#173177");
+        dmap.put("department", obj5);
+
+        Map<String, Object> obj6 = new LinkedHashMap<>();
+        obj6.put("value", request.getParameter("doctor"));
+        obj6.put("color", "#173177");
+        dmap.put("doctor", obj6);
+
+        Map<String, Object> obj7 = new LinkedHashMap<>();
+        obj7.put("value", query.getSeqCode());
+        obj7.put("color", "#173177");
+        dmap.put("seq", obj7);
+
+        Map<String, Object> obj8 = new LinkedHashMap<>();
+        obj8.put("value", "温馨提醒：流水号即为您到医院的就诊号，具体时间以医院的实际情况为准。如有疑问，请留言！");
+        obj8.put("color", "#173177");
+        dmap.put("remark", obj8);
+
+        data.put("data", dmap);
+        System.out.println(Help.bean2Json(data));
+        messageModule.sendTemplate(Help.bean2Json(data));
+      } else result = false;
+    }
+
+    return result;
+  }
+
+  @RequestMapping(value = ViewName.register)
+  public ModelAndView orderHistory(HttpServletRequest request, HttpServletResponse response) {
+    ModelAndView view = new ModelAndView();
+    view.setViewName(ViewName.register);
+    view.addObject(JSTLField.mainUrl, mainUrl.trim());
+    // 获取数据
+    // 根据openid获取用户所有的卡号
+    String openid = sessionUtil.getUserOpenid(request.getSession());
+    List<Card> cardlist = bindCard.cardList(openid);
+    if (cardlist != null && !cardlist.isEmpty()) {
+      // 获取每个卡号下的历史，保存到list
+      List<SingleHistory> historyList = new LinkedList<>();
+      for (Card card : cardlist) {
+        HistorySearchQuery query = new HistorySearchQuery();
+        query.setCardNo(card.getCard_no());
+        query.setCardType(card.getC_type());
+        query.setOrderApptStartDate("1947-01-01");
+        query.setOrderApptEndDate(timeUtil.getFeatureDay(timeUtil.now2s2(), 30));
+
+        List<SingleHistory> history = orderModule.getHistory(query);
+        historyList.addAll(history);
+      }
+      // 按订单状态分类，保存到Map
+      Map<String, List<SingleHistory>> map = new LinkedHashMap<>();
+      for (SingleHistory single : historyList) {
+        String payFlag = single.getPayFlag();
+        if (map.get(payFlag) == null) {
+          List<SingleHistory> l = new LinkedList<>();
+          l.add(single);
+          map.put(payFlag, l);
+        } else map.get(payFlag).add(single);
+      }
+      // 渲染
+      List<SingleHistory> p = new LinkedList<>();
+      List<SingleHistory> tb_r = new LinkedList<>();
+      for (String key : map.keySet()) {
+        if (OrderStatus.P.toString().equals(key)) p.addAll(map.get(key));
+        else tb_r.addAll(map.get(key));
+      }
+
+      // 转状态
+      for (SingleHistory sh : p) {
+        sh.setPayFlag("已支付");
+      }
+
+      for (SingleHistory sh : tb_r) {
+        switch (sh.getPayFlag()) {
+        case "TB":
+          sh.setPayFlag("未支付");
+          break;
+        case "R":
+          sh.setPayFlag("已退费");
+          break;
+        default:
+          break;
+        }
+      }
+
+      view.addObject("p", p);
+      if (p.isEmpty()) view.addObject("nop", true);
+      view.addObject("tb_r", tb_r);
+      if (tb_r.isEmpty()) view.addObject("notb_r", true);
+
+      view.addObject("pcount", p.size());
+      view.addObject("tb_rcount", tb_r.size());
+    }
+    return view;
+  }
+
+  @RequestMapping(value = ViewName.cancelRegister)
+  @ResponseBody
+  public boolean cancelRegister(String orderCode, HttpServletRequest request, HttpServletResponse response) {
+    System.out.println(orderCode);
+    if (StringUtils.isBlank(orderCode)) return false;
+    boolean result = orderModule.cancle(orderCode);
+    // 记录日志
+    logModule.insert(new CancelLog(result, orderCode, timeUtil.now2l()));
+
+    if (result) {
+      // 推送模板消息
+      Map<String, Object> data = new LinkedHashMap<>();
+      data.put("touser", sessionUtil.getUserOpenid(request.getSession()));
+      data.put("template_id", Config.cancle_order_template_id);
+      data.put("url", Config.template_url);
+
+      Map<String, Map<String, Object>> dmap = new LinkedHashMap<>();
+
+      Map<String, Object> obj1 = new LinkedHashMap<>();
+      obj1.put("value",
+          "尊敬的" + request.getParameter("orderApptUser") + ",您已成功取消衢州妇保医院" + request.getParameter("admitDate") + "的预约。");
+      obj1.put("color", "#173177");
+      dmap.put("first", obj1);
+
+      Map<String, Object> obj2 = new LinkedHashMap<>();
+      obj2.put("value", request.getParameter("orderApptUser"));
+      obj2.put("color", "#173177");
+      dmap.put("keyword1", obj2);
+
+      Map<String, Object> obj3 = new LinkedHashMap<>();
+      obj3.put("value", request.getParameter("doctor"));
+      obj3.put("color", "#173177");
+      dmap.put("keyword2", obj3);
+
+      Map<String, Object> obj4 = new LinkedHashMap<>();
+      obj4.put("value", "如有需要，您可以再次预约，如有疑问，请留言！");
+      obj4.put("color", "#173177");
+      dmap.put("remark", obj4);
+
+      data.put("data", dmap);
+      System.out.println(Help.bean2Json(data));
+      messageModule.sendTemplate(Help.bean2Json(data));
+    }
+    return result;
+  }
+}

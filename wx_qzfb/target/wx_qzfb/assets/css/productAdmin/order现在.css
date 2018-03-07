@@ -1,0 +1,95 @@
+@charset "utf-8";
+/* CSS Document */
+
+body{background:#EEF1F3;padding:0;margin:0;}
+.part1{width:100%;margin-top:0.6em;background:#fff;display:inline-block;}
+.part1 .head{padding:0.5em 0;border:0.5px solid #E8E8E8;}
+.part1 .head{
+	height:6.3em;
+	padding-left:5.5em;
+	word-wrap:break-word;
+}
+.part1 img{
+	left:0.5em;
+	width:5em;
+	
+	/*float:left;
+	margin-left:0.5em;*/
+	position:absolute;
+	}
+.clear{clear:both;}
+
+.part1 .intro{
+	margin-left:0.6em;
+	/*float:left;*/
+	
+	}
+
+.part1 .intro .p1 .span1{font-size:1em;font-weight:bold;}
+.part1 .intro .p1 .span2{color:#666666;font-size:0.8em;margin-left:0.2em;}
+
+.part1 .head .p2{color:#999999; font-size:0.95em;font-weight:100;}
+
+
+/*.part1 .pre_intro{width:100%;}*/
+.part1 .pre_intro p{height:2.5em;line-height:2.5em;  margin:0;padding:0;
+ font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif;font-weight:100;font-size:0.95em;padding:0 0.7em;}
+
+.part1 .pre_intro .p2{border-top:0.5px solid #E9E9E9;
+ border-bottom:0.5px solid #E9E9E9;
+}
+
+.part1 .pre_intro p .span2{float:right;}
+.part1 .pre_intro .p1 .span2{font-size:0.9em;color:#737373;}
+/*.part1 .pre_intro .p2 .span2 a{color:#41b2a6;font-size:0.9em;padding:0 0.1em;}*/
+
+.list{
+	width:100%;
+	display:inline-block;
+	background:#fff;
+	margin-top:0.7em;
+	margin-bottom:4em;
+	}
+.list ul{list-style-type:none;}
+.list ul,li{padding:0;margin:0;width:100%;}
+/* .list ul li:hover{background:#C0C7C8;} */
+.list ul li p{height:3em;line-height:3em;border-bottom:0.5px solid #E8E8E8;margin:0;padding:0;margin-left:0.7em;
+background:url("../../image/productAdmin/order/defaut.png") no-repeat left center;
+	background-size:1.3em;
+	font-size:0.9em;color:#646464;}
+.list ul li p .span3{float:right;margin-right:0.7em;
+}
+
+.list ul li p .span2{
+	margin-left:2em;
+	}
+.list ul li p .span3 a{color:#41b2a6;padding:0 0.2em;}
+
+.fixed{
+	width:100%;
+	height:4em;
+	background:#EEF1F3;
+	position:fixed;
+	bottom:0;
+	display:inlie-block;
+	z-index:1;
+	text-align:center;
+	}
+.fixed button{
+	border:none;
+	margin:0.7em 0;
+	height:2.5em;
+	line-height:2.5em;
+	background:#41b2a6;
+	border-radius:0.3em;
+	width:96%;
+	color:#F9F0F2;
+	font-size:1.05em;
+	letter-spacing:0.1em;
+	vertical-align:middle; 
+	}
+
+
+
+
+

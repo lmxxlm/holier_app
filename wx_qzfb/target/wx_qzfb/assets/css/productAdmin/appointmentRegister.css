@@ -1,0 +1,43 @@
+@charset "utf-8";
+/* CSS Document */
+
+.all{
+	width:30%;
+	margin:0 auto;  
+	background:red;
+	}
+.bg{
+	width:100%;
+	background:#CCC;
+	 
+	}
+header {
+	width:100%;
+	background:rgba(255,255,255,1);
+	
+	}
+header span{
+	color:rgba(51,153,204,1);
+	width:50%;
+	font-weight:bold;
+	font-size:18px;
+	display:block;
+	padding:2%;
+	/*display:-moz-inline-box;*/
+	display:inline-box;
+	}
+	
+.part{
+	width:100%;
+	margin-top:3%;
+	background:#FFF;
+	}
+.head-img{
+	margin-top:3%;
+	width:25%;
+	float:left;
+	padding:2px;
+	height:5em;
+	border:1px solid black;
+	}
+

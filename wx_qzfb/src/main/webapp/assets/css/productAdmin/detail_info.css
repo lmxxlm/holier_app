@@ -1,0 +1,173 @@
+@charset "utf-8";
+/* CSS Document */
+
+body{
+	background:#EEF1F3;
+	}
+
+hr,p{padding:0;margin:0;}
+.part1,.part2{ width:100%;
+	background:#fff;
+	display:-moz-box;
+    display:-webkit-box;
+    display:box;
+
+	-moz-box-orient:vertical;
+    -webkit-box-orient:vertical;
+    box-orient:vertical;
+	/*
+		-moz-box-align:end;
+    -webkit-box-align:end;
+    -o-box-align:end;
+    box-align:end;
+	*/
+	}
+.part1 p ,.part2 p{
+	
+	-moz-box-flex:1;
+    -webkit-box-flex:1;
+    box-flex:1;
+	margin:0 1em;
+	border-bottom:0.5px solid #D1D1D1;
+	
+	display:-moz-box;
+    display:-webkit-box;
+    display:box;
+	
+	/*垂直居中*/
+	-moz-box-align:center;
+    -webkit-box-align:center;
+    -o-box-align:center;
+    box-align:center;
+	}
+.part1 p span,.part2 p span{
+	display:-moz-box;
+    display:-webkit-box;
+    display:box;
+	-moz-box-flex:1;
+    -webkit-box-flex:1;
+    box-flex:1;
+	}
+.part1 p .span2,.part2 p .span2{
+	-moz-box-pack:end;
+    -webkit-box-pack:end;
+    -o-box-pack:end;
+    box-pack:end;
+	}
+img{
+	width:3em;
+	}
+p{padding:0.7em 0;}
+.part2{margin-top:0.6em;}
+.tel{color:#41b2a6;}
+.num{color:#898989;}
+
+.part1 p:last-child,.part2 p:last-child{
+	border:none;
+	}
+.button{background:#fff;margin-top:2em;height:3em;
+	line-height:3em;
+	width:100%;
+     display:-moz-box;
+     display:-webkit-box;
+     display:box;
+     /*
+       -moz-box-pack:center;
+	    -webkit-box-pack:center;
+	    -o-box-pack:center;
+	    box-pack:center;
+	text-align:center;
+	 -moz-box-pack:justify;
+	    -webkit-box-pack:justify;
+	    -o-box-pack:justify;
+	    box-pack:justify;
+	*/
+	 -moz-box-pack:center;
+	    -webkit-box-pack:center;
+	    -o-box-pack:center;
+	    box-pack:center;
+	}
+	.button   button{
+	/*
+		width:7em;
+		margin:0 2em;
+		*/
+		
+		-moz-box-flex:1;
+    -webkit-box-flex:1;
+    box-flex:1;
+		}
+	.button button.default{
+		border:0.5px solid #41b2a6; 
+		color:#41b2a6;
+		border-radius:0.3em;
+		margin-right:1em;
+		}
+	.button button.disbind{
+		border:0.5px solid #F69696; 
+		color:#F69696;
+		border-radius:0.3em;
+		margin-left:1em;
+		}
+		
+		
+		
+/*弹出框*/		
+#bg
+     {
+	 width: 100%;
+	 height: 100%;
+	 opacity:0.8;/*设置背景色透明度,1为完全不透明,IE需要使用filter:alpha(opacity=80);*/
+	 filter:alpha(opacity=80);
+	 display: none;
+	position:fixed;
+	 top:0;
+	 left:0;
+	 z-index:2;
+	background: silver;
+    }
+	
+#disbind,#default{
+	 display:none;
+	 
+	 width:100%;
+	 position:fixed;/*让节点脱离文档流,我的理解就是,从页面上浮出来,不再按照文档其它内容布局*/
+	/* top:24%;/*节点脱离了文档流,如果设置位置需要用top和left,right,bottom定位*/
+	 bottom:0px;
+	  z-index:3;/*个人理解为层级关系,由于这个节点要在顶部显示,所以这个值比其余节点的都大*/
+	background:#EEF1F3;
+	text-align:center;
+	}
+	
+#disbind p,#disbind button,#default p,#default button{width:100%;background:#fff; padding:0;margin:0;}
+
+
+#disbind p,#default p{
+			height:3em;
+			color:#999999;
+			border-bottom:1px solid #DADEE3;
+			
+			line-height:3em;
+			
+}
+
+#disbind button,#default button{
+	border:none;
+	height:3em;
+	line-height:3em;
+	}
+#disbind button.cancel,#default button.cancel{margin-top:0.3em;font-weight:100;}
+
+#disbind button.yes{font-weight:100;color:#F77172;}
+#default button.yes{font-weight:100;color:#41b2a6;}
+
+
+
+
+
+
+
+
+
+
+		

@@ -1,0 +1,7 @@
+wx_yzzpat.web.ip=test.holier.cn
+wx_yzzpat.web.host=http://test.holier.cn:8080/wx_yzzpat/
+wx_yzzpat.info.logpath=/alidata1/holier/work/out/wx_yzzpat_info.log
+wx_yzzpat.images.url=http://test.holier.cn:8087/
+wx.appid=wx2c69a89273fcf851
+wx.secret=fc0a354fff40aa18a14b7956ad75fe00
+wx.token=nohup

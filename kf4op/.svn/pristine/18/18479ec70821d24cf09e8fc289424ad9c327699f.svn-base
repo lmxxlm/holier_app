@@ -1,0 +1,5 @@
+kf4op.web.ip=${kf4op.web.ip}
+kf4op.web.host=${kf4op.web.host}
+kf4op.info.logpath=${kf4op.info.logpath}
+kf4op.images.mainUrl=${kf4op.images.url}
+cake.uri=${cake.uri}

@@ -1,0 +1,51 @@
+package com.danrong.wx.yzzpat.controller;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+@Controller
+public class egController {
+
+  @Value("#{properties['wx_yzzpat.web.host']}")
+  public String mainUrl;
+  
+  @RequestMapping(value = "expert_list")
+  public ModelAndView expert_list(HttpServletRequest request, HttpServletResponse response) {
+    ModelAndView view = new ModelAndView();
+    view.setViewName("expert_list");
+    view.addObject("mainUrl", mainUrl.trim());
+    return view;
+  }
+  
+  
+  @RequestMapping(value = "turn_hospital")
+  public ModelAndView turn_hospital(HttpServletRequest request, HttpServletResponse response) {
+    ModelAndView view = new ModelAndView();
+    view.setViewName("turn_hospital");
+    view.addObject("mainUrl", mainUrl.trim());
+    return view;
+  }
+  
+  @RequestMapping(value = "eg7")
+  public ModelAndView eg7(HttpServletRequest request, HttpServletResponse response) {
+    ModelAndView view = new ModelAndView();
+    view.setViewName("eg7");
+    view.addObject("mainUrl", mainUrl.trim());
+    return view;
+  }
+  
+  
+  @RequestMapping(value = "eg77")
+  public ModelAndView eg77(HttpServletRequest request, HttpServletResponse response) {
+    ModelAndView view = new ModelAndView();
+    view.setViewName("eg77");
+    view.addObject("mainUrl", mainUrl.trim());
+    return view;
+  }
+
+}

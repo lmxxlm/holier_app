@@ -1,0 +1,7 @@
+{
+      "wx_yzzpat.web.ip":"${wx_yzzpat.web.ip}",
+      "wx_yzzpat.info.logpath":"${wx_yzzpat.info.logpath}",
+      "wx.appid":"${wx.appid}",
+      "wx.secret":"${wx.secret}",
+      "wx.token":"${wx.token}" 
+}

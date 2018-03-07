@@ -1,0 +1,65 @@
+@charset "utf-8";
+/* CSS Document */
+
+body{
+	background:#EEF1F3;}
+
+*{margin:0;padding:0;}
+p{margin:0;padding:0;height:3em;line-height:3em;/*border-bottom:1px solid #E1E1E1;*/}
+
+/*内容部分*/
+.content{
+	display:block;
+	margin:0 auto;
+	width:100%;
+	background:#fff;
+	font-size:1em;
+	/*padding-top:2em;*/
+
+	}
+
+.content p{
+	width:100%;
+	background:#fff;
+	color:#727272;
+	
+	display:-moz-box;
+    display:-webkit-box;
+    display:box;
+	
+	
+	}
+.content p span{
+	margin-left:1em;
+	width:5em;
+	text-align:end;
+	display:inline-block;
+	 }
+
+.content p input[type="text"]{
+	
+	height:2.9em;
+	line-height:2.9em;
+	margin-right:1em;
+	border:none;
+	outline:none;
+	border-bottom:1px solid #D0D0D0;
+    display:-moz-box;
+    display:-webkit-box;
+    display:box;
+ 	-moz-box-flex:1;
+    -webkit-box-flex:1;
+    box-flex:1;
+	color:#C8C8C8;
+	
+  
+	}
+.content p input[type="radio"]{margin-left:2em;}
+/*按钮*/
+.content p input[type="button"]{text-align:center;}
+span.button{width:100%;text-align:center;display:inline-block;margin:2em 0;} 
+span input[type="button"]{display:inline-block;width:10em;height:2.5em;border:none;border:1px solid #41b2a6;color:#41b2a6;background:#fff;border-radius:0.3em;
+
+}
+.buttonHover{background:#41b2a6;color:#fff;}
+/*span input[type="button"]:hover{color:#fff; background:#41b2a6;}*/
